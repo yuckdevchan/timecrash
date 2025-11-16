@@ -206,28 +206,32 @@
   let lessThan200msSinceLastMouseDown = $state(false);
 
   function handleMouseMove(e: MouseEvent) {
-    if (mouseDown && e.clientY >= trackAreaStartY) {
+    if (mouseDownOnTimeline) {
       playhead.pos = Math.max(0, (e.clientX - trackAreaStartX) / viewScale);
     }
   }
 
   function handleMouseDown(e: MouseEvent) {
     if (e.button === 0) {
-      if (lessThan200msSinceLastMouseDown) {
-        playhead.pos = 0;
-        return;
-      }
       mouseDown = true;
-      lessThan200msSinceLastMouseDown = true;
-      setTimeout(() => {
-        lessThan200msSinceLastMouseDown = false;
-      }, 200);
-      handleMouseMove(e);
+      if (e.clientX >= trackAreaStartX) {
+        if (lessThan200msSinceLastMouseDown) {
+          playhead.pos = 0;
+          return;
+        }
+        lessThan200msSinceLastMouseDown = true;
+        setTimeout(() => {
+          lessThan200msSinceLastMouseDown = false;
+        }, 200);
+        mouseDownOnTimeline = true;
+        handleMouseMove(e);
+      }
     }
   }
 
-  function handleMouseUp(e: MouseEvent) {
+  function handleMouseUp() {
     mouseDown = false;
+    mouseDownOnTimeline = false;
   }
 </script>
 

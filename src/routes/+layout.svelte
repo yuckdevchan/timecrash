@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { ModeWatcher } from 'mode-watcher';
+  import { ModeWatcher } from "mode-watcher";
 
-	let { children } = $props();
+  let { children } = $props();
 
-	import './style.css';
-	import '$lib/assets/css/app.css';
+  import "./style.css";
+  import "$lib/assets/css/app.css";
 </script>
 
 <svelte:head>
-	<link rel="manifest" href="/static/timecrash/manifest.json" />
+  <link rel="manifest" href="/manifest.json" />
 </svelte:head>
 
 <ModeWatcher />
 <main class="h-[92vh] min-h-[92vh]">
-	{@render children()}
+  {@render children()}
 </main>

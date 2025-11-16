@@ -1,279 +1,363 @@
 <script lang="ts">
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import * as Resizable from '$lib/components/ui/resizable/index.js';
-	import * as Select from '$lib/components/ui/select/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+  import * as Tabs from "$lib/components/ui/tabs/index.js";
+  import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import * as Popover from "$lib/components/ui/popover/index.js";
+  import * as Resizable from "$lib/components/ui/resizable/index.js";
+  import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
+  import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
 
-	import CommandRunner from '$lib/components/timecrash/CommandRunner.svelte';
-	import TopBar from '$lib/components/timecrash/TopBar.svelte';
-	import AddTrackPopover from '$lib/components/timecrash/AddTrackPopover.svelte';
-	import NoTracks from '$lib/components/timecrash/NoTracks.svelte';
-	import Timeline from '$lib/components/timecrash/Timeline.svelte';
-	import Track from '$lib/components/timecrash/Track.svelte';
-	import MediaPool from '$lib/components/timecrash/MediaPool.svelte';
-	import BottomBar from '$lib/components/timecrash/BottomBar.svelte';
+  import CommandRunner from "$lib/components/timecrash/CommandRunner.svelte";
+  import TopBar from "$lib/components/timecrash/TopBar.svelte";
+  import AddTrackPopover from "$lib/components/timecrash/AddTrackPopover.svelte";
+  import NoTracks from "$lib/components/timecrash/NoTracks.svelte";
+  import Timeline from "$lib/components/timecrash/Timeline.svelte";
+  import Track from "$lib/components/timecrash/Track.svelte";
+  import MediaPool from "$lib/components/timecrash/MediaPool.svelte";
+  import BottomBar from "$lib/components/timecrash/BottomBar.svelte";
+  import ProjectTabBar from "$lib/components/timecrash/ProjectTabBar.svelte";
 
-	import {
-		projects as projectsInit,
-		defaultProjectName,
-		projectTemplates,
-		trackTemplates
-	} from '$lib/timecrash';
-	import type { TrackLike } from '$lib/timecrash/index.d.ts';
+  import {
+    projects as projectsInit,
+    defaultProjectName,
+    firstProjectId,
+    projectTemplates,
+    trackTemplates,
+  } from "$lib/timecrash";
+  import type { TrackLike, TrackType } from "$lib/timecrash/index.d.ts";
 
-	import { Plus } from '@lucide/svelte';
+  import { Plus } from "@lucide/svelte";
 
-	let projects = $state(projectsInit);
-	let selectedProject = $state(defaultProjectName);
-	let selectedProjectId = $state(projects[defaultProjectName].id);
-	$effect(() => {
-		selectedProject = Object.keys(projects).find(
-			(projectName) => projects[projectName].id === selectedProjectId
-		);
-	});
-	let project = $state(projects[selectedProject]);
-	let tracks = $state<TrackLike[]>(project.tracks);
-	let playhead = $state(project.playhead);
-	let bpm = $state(project.bpm);
-	let timeSignature = $state(project.timeSignature);
-	let timeSignatureUpper = $state(timeSignature[0]);
-	let timeSignatureLower = $state(timeSignature[1]);
-	let baseTrackHeight = $state(project.baseTrackHeight);
-	let baseTrackType = $state(project.baseTrackType);
-	let baseTrackAddAmount = $state(project.baseTrackAddAmount);
-	let trackCount = $derived(tracks.length);
+  let projects = $state(projectsInit);
+  let selectedProjectId = $state(firstProjectId);
+  let project = $state(projects[selectedProjectId]);
+  let tracks = $state<TrackLike[]>(project.tracks);
+  let playhead = $state(project.playhead);
+  let bpm = $state(project.bpm);
+  let timeSignature = $state(project.timeSignature);
+  let baseTrackHeight = $state(project.baseTrackHeight);
+  let baseTrackType = $state(project.baseTrackType);
+  let baseTrackAddAmount = $state(project.baseTrackAddAmount);
+  let trackCount = $derived(tracks.length);
 
-	$effect(() => {
-		if (selectedProject) {
-			project = projects[selectedProject];
-			tracks = project.tracks;
-			playhead = project.playhead;
-			bpm = project.bpm;
-			timeSignature = project.timeSignature;
-			baseTrackHeight = project.baseTrackHeight;
-			baseTrackAddAmount = project.baseTrackAddAmount;
-		}
-	});
+  $effect(() => {
+    if (selectedProjectId) {
+      project = projects[selectedProjectId];
+      tracks = project.tracks;
+      playhead = project.playhead;
+      bpm = project.bpm;
+      timeSignature = project.timeSignature;
+      baseTrackHeight = project.baseTrackHeight;
+      baseTrackAddAmount = project.baseTrackAddAmount;
+    }
+  });
 
-	$effect(() => {
-		if (timeSignature) {
-			timeSignatureUpper = timeSignature[0];
-			timeSignatureLower = timeSignature[1];
-		}
-	});
+  $effect(() => {
+    playhead.exists = trackCount <= 0 ? false : true;
+  });
 
-	let showCommandRunner = $state(false);
-	let showMediaPool = $state(true);
-	let showCreateProjectDialog = $state(false);
-	let trackAreaStartX = $state(0);
-	let viewScale = $state(25);
-	let autoSizeTracks = $state(false);
+  let showDeleteContextMenu = $state(false);
+  let showProjectConflictDialog = $state(false);
+  let showCommandRunner = $state(false);
+  let showMediaPool = $state(true);
+  let showCreateProjectDialog = $state(false);
+  let trackAreaStartX = $state(0);
+  let trackAreaStartY = $state(0);
+  let viewScale = $state(25);
+  let autoSizeTracks = $state(false);
 
-	let newProjectName = $state('');
+  let newProjectName = $state("");
+  let newProjectTemplate = $state("default");
 
-	function addTracks(e = null, trackTypes = baseTrackType, amount = baseTrackAddAmount) {
-		for (let trackType of trackTypes) {
-			const template = trackTemplates[trackType];
-			for (let i = 0; i < amount; i++) {
-				const track = { ...template };
-				track.id = crypto.randomUUID();
-				let a = 0;
-				while (true) {
-					track.name = `${template.name} ${a + 1}`;
-					if (tracks.find((t: TrackLike) => t.name === track.name)) {
-						a += 1;
-					} else {
-						break;
-					}
-				}
-				tracks.push(track);
-			}
-		}
-	}
+  function addTracks(
+    e: Event | null = null,
+    trackTypes: TrackType[] = baseTrackType,
+    amount: number = baseTrackAddAmount,
+  ) {
+    for (let trackType of trackTypes) {
+      const template = trackTemplates[trackType];
+      for (let i = 0; i < amount; i++) {
+        const track = { ...template };
+        track.id = crypto.randomUUID();
+        let a = 0;
+        while (true) {
+          track.name = `${template.name} ${a + 1}`;
+          if (tracks.find((t: TrackLike) => t.name === track.name)) {
+            a += 1;
+          } else {
+            break;
+          }
+        }
+        tracks.push(track);
+      }
+    }
+  }
 
-	function deleteTrack(index: number) {
-		tracks.splice(index, 1);
-	}
+  function deleteTrack(index: number) {
+    tracks.splice(index, 1);
+  }
 
-	function soloTrack(index: number) {
-		tracks[index].soloMute = tracks[index].soloMute.includes('solo')
-			? tracks[index].soloMute.filter((v: string) => v !== 'solo')
-			: [...tracks[index].soloMute, 'solo'];
-	}
+  function deleteLastTrack() {
+    if (!(tracks.length === 0)) {
+      tracks.pop();
+    }
+  }
 
-	function muteTrack(index: number) {
-		tracks[index].soloMute = tracks[index].soloMute.includes('mute')
-			? tracks[index].soloMute.filter((v: string) => v !== 'mute')
-			: [...tracks[index].soloMute, 'mute'];
-	}
+  function addTrackWithLastTrackType() {
+    if (tracks.length === 0) {
+      addTracks(null, ["audio"], 1);
+    } else {
+      const lastTrack = tracks[tracks.length - 1];
+      addTracks(null, [lastTrack.type], 1);
+    }
+  }
 
-	function rewindPlayhead() {
-		playhead.pos = Math.max(0, playhead.pos - 1);
-	}
+  function soloTrack(index: number) {
+    tracks[index].soloMute = tracks[index].soloMute.includes("solo")
+      ? tracks[index].soloMute.filter((v: string) => v !== "solo")
+      : [...tracks[index].soloMute, "solo"];
+  }
 
-	function fastForwardPlayhead() {
-		playhead.pos = Math.max(0, playhead.pos + 1);
-	}
+  function muteTrack(index: number) {
+    tracks[index].soloMute = tracks[index].soloMute.includes("mute")
+      ? tracks[index].soloMute.filter((v: string) => v !== "mute")
+      : [...tracks[index].soloMute, "mute"];
+  }
 
-	function playPause() {
-		playhead.playing = !playhead.playing;
-	}
+  function rewindPlayhead() {
+    playhead.pos = Math.max(0, playhead.pos - 1);
+  }
 
-	function startStopRecording() {
-		playhead.recording = !playhead.recording;
-		playhead.playing = playhead.recording;
-	}
+  function fastForwardPlayhead() {
+    playhead.pos = Math.max(0, playhead.pos + 1);
+  }
 
-	function createProject() {
-		let a = projectTemplates.default;
-		a.id = crypto.randomUUID();
-		let name = newProjectName;
-		if (name === '' || name === ' ') {
-			let index = 1;
-			while (true) {
-				name = `Untitled Project ${index}`;
-				if (!Object.keys(projects).includes(name)) {
-					break;
-				}
-				index += 1;
-			}
-		}
-		projects[name] = a;
-		selectedProject = a;
-		showCreateProjectDialog = false;
-	}
+  function playPause() {
+    playhead.playing = !playhead.playing;
+  }
+
+  function startStopRecording() {
+    playhead.recording = !playhead.recording;
+    playhead.playing = playhead.recording;
+  }
+
+  function createProject() {
+    let a = projectTemplates.default;
+    a.id = crypto.randomUUID();
+    let name = newProjectName;
+    if (name === "" || name === " ") {
+      let index = 1;
+      while (true) {
+        name = `Untitled Project ${index}`;
+        if (!Object.keys(projects).includes(name)) {
+          break;
+        }
+        index += 1;
+      }
+    }
+    projects[name] = a;
+    selectedProject = a;
+    showCreateProjectDialog = false;
+  }
+
+  function saveProject() {
+    const dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(projects[selectedProjectId]));
+    const dlAnchorElem = document.createElement("a");
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute(
+      "download",
+      `${projects[selectedProjectId].name}.timecrash`,
+    );
+    dlAnchorElem.click();
+  }
+
+  function openProject() {
+    const inputElem = document.createElement("input");
+    inputElem.type = "file";
+    inputElem.accept = ".timecrash";
+    inputElem.onchange = (e: Event) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result) {
+          const projectData = JSON.parse(e.target.result as string);
+          console.log(projectData.id);
+          console.log(Object.keys(projects));
+          if (Object.keys(projects).includes(projectData.id)) {
+            showProjectConflictDialog = true;
+            console.log(
+              "Project conflict detected. Please resolve the conflict.",
+            );
+            return;
+          }
+          projects[projectData.name] = projectData;
+          selectedProjectId = projectData.name;
+        }
+      };
+      reader.readAsText(file);
+    };
+    inputElem.click();
+  }
+
+  let mouseDown = $state(false);
+  let mouseDownOnTimeline = $state(false);
+  let lessThan200msSinceLastMouseDown = $state(false);
+
+  function handleMouseMove(e: MouseEvent) {
+    if (mouseDown && e.clientY >= trackAreaStartY) {
+      playhead.pos = Math.max(0, (e.clientX - trackAreaStartX) / viewScale);
+    }
+  }
+
+  function handleMouseDown(e: MouseEvent) {
+    if (e.button === 0) {
+      if (lessThan200msSinceLastMouseDown) {
+        playhead.pos = 0;
+        return;
+      }
+      mouseDown = true;
+      lessThan200msSinceLastMouseDown = true;
+      setTimeout(() => {
+        lessThan200msSinceLastMouseDown = false;
+      }, 200);
+      handleMouseMove(e);
+    }
+  }
+
+  function handleMouseUp(e: MouseEvent) {
+    mouseDown = false;
+  }
 </script>
 
 <svelte:head>
-	<title>timecrash</title>
-	<meta property="og:title" content="timecrash" />
-	<meta property="og:description" content="multimedia workstation" />
-	<meta property="og:url" content="https://supersonic.software/timecrash" />
-	<meta property="og:site_name" content="Supersonic" />
-	<meta property="theme-color" content="#0000FF" />
+  <title>timecrash</title>
+  <meta property="og:title" content="timecrash" />
+  <meta property="og:description" content="multimedia workstation" />
+  <meta property="og:url" content="https://supersonic.software/timecrash" />
+  <meta property="og:site_name" content="Supersonic" />
+  <meta property="theme-color" content="#0000FF" />
 </svelte:head>
 
+<svelte:window
+  onmousedown={handleMouseDown}
+  onmouseup={handleMouseUp}
+  onmousemove={handleMouseMove}
+/>
+
+<ContextMenu.Root bind:open={showDeleteContextMenu}></ContextMenu.Root>
+
+<Dialog.Root open={showProjectConflictDialog}>
+  <Dialog.Content class="[&>button:last-child]:hidden">
+    <Dialog.Header>Resolve Project Conflict</Dialog.Header>
+    <Dialog.Description
+      >The opened project conflicts with an existing open project.</Dialog.Description
+    >
+    <Button>Keep existing open project</Button>
+    <Button>Keep newly opened project</Button>
+    <Button>Keep Both</Button>
+    <Dialog.Description class="text-center">
+      Selecting 'Keep Both' marks the newly opened project as a separate project
+      from the existing open project.
+    </Dialog.Description>
+  </Dialog.Content>
+</Dialog.Root>
+
 <CommandRunner
-	bind:showMediaPool
-	bind:showCreateProjectDialog
-	bind:autoSizeTracks
-	bind:showCommandRunner
-	{startStopRecording}
-	{playPause}
-	{rewindPlayhead}
-	{fastForwardPlayhead}
+  bind:showMediaPool
+  bind:showCreateProjectDialog
+  bind:autoSizeTracks
+  bind:showCommandRunner
+  {startStopRecording}
+  {playPause}
+  {rewindPlayhead}
+  {fastForwardPlayhead}
+  {saveProject}
+  {addTrackWithLastTrackType}
+  {deleteLastTrack}
 />
 
 <TopBar
-	bind:playhead
-	bind:bpm
-	bind:timeSignatureUpper
-	bind:timeSignatureLower
-	bind:baseTrackHeight
-	bind:autoSizeTracks
-	bind:showCommandRunner
+  bind:playhead
+  bind:bpm
+  bind:timeSignature
+  bind:baseTrackHeight
+  bind:autoSizeTracks
+  bind:showCommandRunner
+  {saveProject}
+  {openProject}
 />
 
-<Resizable.PaneGroup direction="horizontal" class="h-full">
-	<Resizable.Pane class="h-full">
-		<Tabs.Root bind:value={selectedProjectId}>
-			<Tabs.List class="mt-1 rounded-none bg-transparent">
-				{#each Object.keys(projects) as project (projects[project].id)}
-					<Tabs.Trigger value={projects[project].id}>{project}</Tabs.Trigger>
-				{/each}
-				<Dialog.Root bind:open={showCreateProjectDialog}>
-					<Dialog.Trigger
-						class="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 ml-1 flex h-full w-8 items-center justify-center rounded-sm"
-						><Plus /></Dialog.Trigger
-					>
-					<Dialog.Content>
-						<Dialog.Header>New Project</Dialog.Header>
-						<label for="projectName" class="select-none">Project Name</label>
-						<Input
-							id="projectName"
-							placeholder="Untitled Project"
-							bind:value={newProjectName}
-							onkeypress={(e) => {
-								if (e.key === 'Enter') {
-									createProject();
-								}
-							}}
-						></Input>
-						<label for="templateSelect" class="select-none">Template</label>
-						<Select.Root type="single" value="default">
-							<Select.Trigger
-								class="w-full"
-								onkeypress={(e) => {
-									if (e.key === 'Enter') {
-										createProject();
-									}
-								}}>Select a Template</Select.Trigger
-							>
-							<Select.Content>
-								{#each Object.keys(projectTemplates) as template (template)}
-									<Select.Item value={template}
-										>{projectTemplates[template].templateName}</Select.Item
-									>
-								{/each}
-							</Select.Content>
-						</Select.Root>
-						<label for="bpm" class="select-none">BPM</label>
-						<Input
-							id="bpm"
-							placeholder="Beats per minute"
-							onkeypress={(e) => {
-								if (e.key === 'Enter') {
-									createProject();
-								}
-							}}
-						></Input>
-						<Button type="submit" onclick={createProject}>Create</Button>
-					</Dialog.Content>
-				</Dialog.Root>
-			</Tabs.List>
-			{#each Object.keys(projects) as project (projects[project].id)}
-				<Tabs.Content value={projects[project].id} forceMount>
-					<div class="flex w-full bg-zinc-900">
-						<Popover.Root>
-							<Popover.Trigger class={buttonVariants({ variant: 'timecrashTopButtons' })}
-								><Plus />Add Tracks</Popover.Trigger
-							>
-							<AddTrackPopover bind:baseTrackAddAmount bind:baseTrackType {addTracks} />
-						</Popover.Root>
-					</div>
+<Resizable.PaneGroup direction="horizontal" class="h-full mt-1">
+  <Resizable.Pane class="h-full">
+    <Tabs.Root class="h-full" bind:value={selectedProjectId}>
+      <ProjectTabBar
+        {projects}
+        {projectTemplates}
+        {createProject}
+        {newProjectName}
+        {newProjectTemplate}
+        bind:showCreateProjectDialog
+      />
+      {#each Object.keys(projects) as project (projects[project].id)}
+        <Tabs.Content value={projects[project].id} class="h-full">
+          <div class="flex w-full bg-zinc-900">
+            <Popover.Root>
+              <Popover.Trigger
+                class={buttonVariants({ variant: "timecrashTopButtons" })}
+                ><Plus />Add Tracks</Popover.Trigger
+              >
+              <AddTrackPopover
+                bind:baseTrackAddAmount
+                bind:baseTrackType
+                {addTracks}
+              />
+            </Popover.Root>
+          </div>
 
-					<NoTracks bind:trackCount {addTracks} />
+          <NoTracks bind:trackCount {addTrackWithLastTrackType} />
 
-					<Timeline bind:playhead {trackAreaStartX} {viewScale}>
-						{#each tracks as track, index (track.id)}
-							<Track
-								bind:track={tracks[index]}
-								bind:trackAreaStartX
-								bind:playhead
-								{index}
-								{baseTrackHeight}
-								{deleteTrack}
-								{soloTrack}
-								{muteTrack}
-								{trackCount}
-								{viewScale}
-								{autoSizeTracks}
-							/>
-						{/each}
-					</Timeline>
-				</Tabs.Content>
-			{/each}
-		</Tabs.Root>
-	</Resizable.Pane>
-	<Resizable.Handle class="w-1" />
-	<div class:hidden={!showMediaPool}>
-		<Resizable.Pane class="h-full" defaultSize={35}>
-			<MediaPool bind:tracks bind:baseTrackAddAmount bind:baseTrackType {addTracks} />
-		</Resizable.Pane>
-	</div>
+          <Timeline
+            bind:playhead
+            {trackAreaStartX}
+            {viewScale}
+            {addTrackWithLastTrackType}
+          >
+            {#each projects[project].tracks as track, index (track.id)}
+              <Track
+                bind:track={tracks[index]}
+                bind:trackAreaStartX
+                bind:trackAreaStartY
+                bind:playhead
+                {index}
+                {baseTrackHeight}
+                {deleteTrack}
+                {soloTrack}
+                {muteTrack}
+                {trackCount}
+                {viewScale}
+                {autoSizeTracks}
+                inProjectId={selectedProjectId}
+                bind:selectedProjectId
+              />
+            {/each}
+          </Timeline>
+        </Tabs.Content>
+      {/each}
+    </Tabs.Root>
+  </Resizable.Pane>
+  <Resizable.Handle class="w-1" />
+  <div class:hidden={!showMediaPool}>
+    <Resizable.Pane class="h-full z-2!" defaultSize={35}>
+      <MediaPool
+        bind:tracks
+        bind:baseTrackAddAmount
+        bind:baseTrackType
+        {addTracks}
+      />
+    </Resizable.Pane>
+  </div>
 </Resizable.PaneGroup>
 
 <BottomBar bind:trackCount bind:playhead />

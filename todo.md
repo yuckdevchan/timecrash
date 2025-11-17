@@ -12,8 +12,9 @@
 - [ ] clips
     - [ ] location
     - [ ] length
+    - [ ] working waveform
     - [ ] copy/paste
-    - [ ] drag & drop from media pool
+    - [x] drag & drop from media pool
     - [ ] trimming
     - [ ] splitting
     - [ ] audio
@@ -31,7 +32,7 @@
 - [ ] exporting
 - [ ] media pool
     - [ ] import from url
-    - [ ] media preview
+    - [ ] media previewa
          - [ ] video preview
              - [ ] metadata
              - [ ] audio preview

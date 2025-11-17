@@ -9,7 +9,7 @@
   import AddTrackPopover from "$lib/components/timecrash/AddTrackPopover.svelte";
 
   import { formatUnixTimestamp } from "$lib/timecrash/utils.ts";
-  import type { MediaItem } from "$lib/timecrash/index.d.ts";
+  import type { MediaItem, TrackLike } from "$lib/timecrash/index.d.ts";
 
   import {
     FilePlay,
@@ -24,13 +24,14 @@
   import Input from "../ui/input/input.svelte";
 
   let {
+    mediaPool = $bindable(),
     tracks = $bindable(),
     baseTrackAddAmount = $bindable(),
     baseTrackType = $bindable(),
     addTracks,
+    addMediaItemToTrackAsClip,
   } = $props();
 
-  let mediaPool = $state([]);
   let selectedFiles = $state([]);
   let mediaPoolDensity = $state(1);
 
@@ -51,26 +52,6 @@
 
   function removeFromMediaPool(fileId: string) {
     mediaPool = mediaPool.filter((file) => file.id !== fileId);
-  }
-
-  function enableRenaming(fileId: string) {
-    const file = mediaPool.find((file) => file.id === fileId);
-    if (file) {
-      file.renaming = true;
-    }
-  }
-
-  function addClipToTrack(fileId: string, trackId: string) {
-    const file = mediaPool.find((file) => file.id === fileId);
-    const track = tracks.find((track) => track.id === trackId);
-    track.clips.push({
-      id: crypto.randomUUID(),
-      mediaItem: file,
-      inTrackStart: 0,
-      inMediaStart: 0,
-      inMediaEnd: 10,
-      speed: 1,
-    });
   }
 
   let newMediaURL = $state("https://supersonic.software/clues/3/winner.mp3");
@@ -233,7 +214,7 @@
                 {#each tracks as track, index (track.id)}
                   <ContextMenu.Item
                     class="flex gap-2"
-                    onclick={() => addClipToTrack(file.id, track.id)}
+                    onclick={() => addMediaItemToTrackAsClip(file.id, track.id)}
                   >
                     <span class="flex items-center font-mono text-zinc-600"
                       >{index + 1}</span

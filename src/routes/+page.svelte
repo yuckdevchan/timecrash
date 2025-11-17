@@ -23,7 +23,11 @@
     projectTemplates,
     trackTemplates,
   } from "$lib/timecrash";
-  import type { TrackLike, TrackType } from "$lib/timecrash/index.d.ts";
+  import type {
+    TrackLike,
+    TrackType,
+    MediaItem,
+  } from "$lib/timecrash/index.d.ts";
 
   import { Plus } from "@lucide/svelte";
 
@@ -38,6 +42,8 @@
   let baseTrackType = $state(project.baseTrackType);
   let baseTrackAddAmount = $state(project.baseTrackAddAmount);
   let trackCount = $derived(tracks.length);
+
+  let mediaPool = $state([]);
 
   $effect(() => {
     if (selectedProjectId) {
@@ -238,6 +244,21 @@
     mouseDown = false;
     mouseDownOnTimeline = false;
   }
+
+  function addMediaItemToTrackAsClip(mediaItemId: string, trackId: string) {
+    const mediaItem: MediaItem = mediaPool.find(
+      (mediaItem: MediaItem) => mediaItem.id === mediaItemId,
+    );
+    const track = tracks.find((track: TrackLike) => track.id === trackId);
+    track.clips.push({
+      id: crypto.randomUUID(),
+      mediaItem: mediaItem,
+      inTrackStart: 0,
+      inMediaStart: 0,
+      inMediaEnd: 10,
+      speed: 1,
+    });
+  }
 </script>
 
 <svelte:head>
@@ -350,6 +371,8 @@
                 {autoSizeTracks}
                 inProjectId={selectedProjectId}
                 bind:selectedProjectId
+                {mediaPool}
+                {addMediaItemToTrackAsClip}
               />
             {/each}
           </Timeline>
@@ -359,12 +382,14 @@
   </Resizable.Pane>
   <Resizable.Handle class="w-1" />
   <div class:hidden={!showMediaPool}>
-    <Resizable.Pane class="h-full z-2!" defaultSize={35}>
+    <Resizable.Pane class="h-full z-2! max-w-150 w-150" defaultSize={35}>
       <MediaPool
+        bind:mediaPool
         bind:tracks
         bind:baseTrackAddAmount
         bind:baseTrackType
         {addTracks}
+        {addMediaItemToTrackAsClip}
       />
     </Resizable.Pane>
   </div>

@@ -7,7 +7,11 @@
   import NumericInput from "$lib/components/timecrash/NumericInput.svelte";
   import Clip from "$lib/components/timecrash/Clip.svelte";
 
-  import type { TrackLike, Playhead } from "$lib/timecrash/index.d.ts";
+  import type {
+    TrackLike,
+    Playhead,
+    MediaItem,
+  } from "$lib/timecrash/index.d.ts";
 
   import {
     X,
@@ -51,6 +55,8 @@
     autoSizeTracks,
     inProjectId,
     selectedProjectId = $bindable(),
+    mediaPool,
+    addMediaItemToTrackAsClip,
   }: Props = $props();
 
   let trackAreaStartXValue = $state(0);
@@ -67,6 +73,16 @@
         trackAreaStartY = trackArea.getBoundingClientRect().top;
       }
     });
+  }
+
+  function handleDrop(event: DragEvent) {
+    event.preventDefault();
+    const mediaItemId = event.dataTransfer?.getData("text/plain");
+    const mediaItem = mediaPool.find(
+      (mediaItem: MediaItem) => mediaItem.id === mediaItemId,
+    );
+    console.log(mediaItem);
+    addMediaItemToTrackAsClip(mediaItem.id, track.id);
   }
 </script>
 
@@ -158,6 +174,10 @@
         ondblclick={() => {
           playhead.pos = 0;
         }}
+        ondragover={(e) => {
+          e.preventDefault();
+        }}
+        ondrop={handleDrop}
       >
         {#each track.clips as clip, index (clip.id)}
           <Clip {clip} bind:track {index} />

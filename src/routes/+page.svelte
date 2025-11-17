@@ -6,15 +6,19 @@
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
 
+  import { Plus, Settings2 } from "@lucide/svelte";
+
   import CommandRunner from "$lib/components/timecrash/CommandRunner.svelte";
   import TopBar from "$lib/components/timecrash/TopBar.svelte";
-  import AddTrackPopover from "$lib/components/timecrash/AddTrackPopover.svelte";
+  import AddTrackPopoverContent from "$lib/components/timecrash/AddTrackPopoverContent.svelte";
+  import ViewAndPlaybackOptionsPopoverContent from "$lib/components/timecrash/ViewAndPlaybackOptionsPopoverContent.svelte";
   import NoTracks from "$lib/components/timecrash/NoTracks.svelte";
   import Timeline from "$lib/components/timecrash/Timeline.svelte";
   import Track from "$lib/components/timecrash/Track.svelte";
   import MediaPool from "$lib/components/timecrash/MediaPool.svelte";
   import BottomBar from "$lib/components/timecrash/BottomBar.svelte";
   import ProjectTabBar from "$lib/components/timecrash/ProjectTabBar.svelte";
+  import ColorPicker from "$lib/components/timecrash/ColorPicker.svelte";
 
   import {
     projects as projectsInit,
@@ -22,14 +26,8 @@
     firstProjectId,
     projectTemplates,
     trackTemplates,
-  } from "$lib/timecrash";
-  import type {
-    TrackLike,
-    TrackType,
-    MediaItem,
-  } from "$lib/timecrash/index.d.ts";
-
-  import { Plus } from "@lucide/svelte";
+  } from "$lib/";
+  import type { TrackLike, TrackType, MediaItem } from "$lib/index.d.ts";
 
   let projects = $state(projectsInit);
   let selectedProjectId = $state(firstProjectId);
@@ -67,8 +65,6 @@
   let showMediaPool = $state(true);
   let showCreateProjectDialog = $state(false);
   let trackAreaStartX = $state(0);
-  let trackAreaEndX = $state(0);
-  let trackAreaStartY = $state(0);
   let viewScale = $state(25);
   let autoSizeTracks = $state(false);
 
@@ -208,42 +204,41 @@
     inputElem.click();
   }
 
-  let mouseDown = $state(false);
   let mouseDownOnTimeline = $state(false);
-  let lessThan200msSinceLastMouseDown = $state(false);
+  // let lessThan200msSinceLastMouseDown = $state(false);
 
   function handleMouseMove(e: MouseEvent) {
-    if (mouseDownOnTimeline) {
+    if (mouseDownOnTimeline && false) {
       playhead.pos = Math.max(0, (e.clientX - trackAreaStartX) / viewScale);
     }
   }
 
-  function handleMouseDown(e: MouseEvent) {
-    if (e.button === 0) {
-      mouseDown = true;
-      if (
-        e.clientX >= trackAreaStartX &&
-        e.clientX <= trackAreaEndX &&
-        e.clientY >= trackAreaStartY
-      ) {
-        if (lessThan200msSinceLastMouseDown) {
-          playhead.pos = 0;
-          return;
-        }
-        lessThan200msSinceLastMouseDown = true;
-        setTimeout(() => {
-          lessThan200msSinceLastMouseDown = false;
-        }, 200);
-        mouseDownOnTimeline = true;
-        handleMouseMove(e);
-      }
-    }
-  }
+  // function handleMouseDown(e: MouseEvent) {
+  //   if (e.button === 0) {
+  //     mouseDown = true;
+  //     if (
+  //       e.clientX >= trackAreaStartX &&
+  //       e.clientX <= trackAreaEndX &&
+  //       e.clientY >= trackAreaStartY
+  //     ) {
+  //       if (lessThan200msSinceLastMouseDown) {
+  //         playhead.pos = 0;
+  //         return;
+  //       }
+  //       lessThan200msSinceLastMouseDown = true;
+  //       setTimeout(() => {
+  //         lessThan200msSinceLastMouseDown = false;
+  //       }, 200);
+  //       mouseDownOnTimeline = true;
+  //       handleMouseMove(e);
+  //     }
+  //   }
+  // }
 
-  function handleMouseUp() {
-    mouseDown = false;
-    mouseDownOnTimeline = false;
-  }
+  // function handleMouseUp() {
+  //   mouseDown = false;
+  //   mouseDownOnTimeline = false;
+  // }
 
   function addMediaItemToTrackAsClip(mediaItemId: string, trackId: string) {
     const mediaItem: MediaItem = mediaPool.find(
@@ -270,11 +265,7 @@
   <meta property="theme-color" content="#0000FF" />
 </svelte:head>
 
-<svelte:window
-  onmousedown={handleMouseDown}
-  onmouseup={handleMouseUp}
-  onmousemove={handleMouseMove}
-/>
+<svelte:window onmousemove={handleMouseMove} />
 
 <ContextMenu.Root bind:open={showDeleteContextMenu}></ContextMenu.Root>
 
@@ -332,18 +323,29 @@
       />
       {#each Object.keys(projects) as project (projects[project].id)}
         <Tabs.Content value={projects[project].id} class="h-full">
-          <div class="flex w-full dark:bg-zinc-900 bg-zinc-300">
+          <div class="flex w-full dark:bg-zinc-900 bg-zinc-300 justify-between">
             <Popover.Root>
               <Popover.Trigger
                 class={buttonVariants({ variant: "timecrashTopButtons" })}
                 ><Plus />Add Tracks</Popover.Trigger
               >
-              <AddTrackPopover
+              <AddTrackPopoverContent
                 bind:baseTrackAddAmount
                 bind:baseTrackType
                 {addTracks}
               />
             </Popover.Root>
+            <div class="flex">
+              <ColorPicker />
+              <Popover.Root>
+                <Popover.Trigger
+                  class={buttonVariants({ variant: "timecrashTopButtons" })}
+                >
+                  <Settings2 />
+                </Popover.Trigger>
+                <ViewAndPlaybackOptionsPopoverContent />
+              </Popover.Root>
+            </div>
           </div>
 
           <NoTracks bind:trackCount {addTrackWithLastTrackType} />
@@ -358,9 +360,8 @@
               <Track
                 bind:track={tracks[index]}
                 bind:trackAreaStartX
-                bind:trackAreaEndX
-                bind:trackAreaStartY
                 bind:playhead
+                bind:mouseDownOnTimeline
                 {index}
                 {baseTrackHeight}
                 {deleteTrack}

@@ -6,10 +6,10 @@
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
 
   import NoMedia from "$lib/components/timecrash/NoMedia.svelte";
-  import AddTrackPopover from "$lib/components/timecrash/AddTrackPopover.svelte";
+  import AddTrackPopoverContent from "$lib/components/timecrash/AddTrackPopoverContent.svelte";
 
-  import { formatUnixTimestamp } from "$lib/timecrash/utils.ts";
-  import type { MediaItem, TrackLike } from "$lib/timecrash/index.d.ts";
+  import { formatUnixTimestamp } from "$lib/utils.ts";
+  import type { MediaItem, TrackLike } from "$lib/index.d.ts";
 
   import {
     FilePlay,

@@ -25,7 +25,8 @@ export interface AudioMediaItem extends MediaItem {
 
 export type Clip = {
   id: string;
-  mediaItem: MediaItem;
+  mediaItemId: string;
+  name: string;
   inTrackStart: number;
   inMediaStart: number;
   inMediaEnd: number;

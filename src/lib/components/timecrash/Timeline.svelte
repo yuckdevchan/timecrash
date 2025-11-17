@@ -33,11 +33,28 @@
 {@render children()}
 
 {#if playhead.exists}
-  <button
-    class="border-r-2 border-zinc-500 bg-zinc-300 dark:border-zinc-900 dark:bg-neutral-950 h-full flex flex-col items-center justify-between focus:outline-none"
-    style="width: {trackAreaStartX}px;"
-    ondblclick={addTrackWithLastTrackType}
-    aria-label="Double click to add a new audio track"
-  >
-  </button>
+  <div class="flex h-full w-full items-center justify-start">
+    <button
+      class="border-r-2 border-zinc-500 bg-zinc-300 dark:border-zinc-900 dark:bg-neutral-950 h-full flex flex-col items-center justify-between focus:outline-none flex-shrink-0"
+      style="width: {trackAreaStartX}px !important;"
+      ondblclick={addTrackWithLastTrackType}
+      aria-label="Double click to add a new audio track"
+    >
+    </button>
+
+    <button
+      class="h-full focus:outline-none flex-1"
+      aria-label="Click to set playhead position to cursor; Double click to set playhead position to zero"
+      onclick={(event: MouseEvent) => {
+        playhead.pos = Math.max(
+          0,
+          (event.clientX - trackAreaStartX) / viewScale,
+        );
+      }}
+      ondblclick={() => {
+        playhead.pos = 0;
+      }}
+    >
+    </button>
+  </div>
 {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import WaveSurfer from "$lib/timecrash/wavesurfer.esm.js";
+  import WaveSurfer from "$lib/wavesurfer.esm.js";
   import { onMount } from "svelte";
 
   let { clip } = $props();

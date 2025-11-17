@@ -6,7 +6,7 @@
   import { toggleMode } from "mode-watcher";
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
 
-  import { secondsToDurationString } from "$lib/timecrash/utils.ts";
+  import { secondsToDurationString } from "$lib/utils.ts";
 
   import {
     Plus,

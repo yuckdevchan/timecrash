@@ -25,8 +25,8 @@
   type Props = {
     track: TrackLike;
     trackAreaStartX: number;
-    trackAreaStartY: number;
     playhead: Playhead;
+    mouseDownOnTimeline: boolean;
     index: number;
     baseTrackHeight: number;
     deleteTrack: (index: number) => void;
@@ -37,14 +37,15 @@
     autoSizeTracks: boolean;
     inProjectId: string;
     selectedProjectId: string;
+    mediaPool: MediaItem[];
+    addMediaItemToTrackAsClip: (mediaItemId: string, trackId: string) => void;
   };
 
   let {
     track = $bindable(),
     trackAreaStartX = $bindable(),
-    trackAreaEndX = $bindable(),
-    trackAreaStartY = $bindable(),
     playhead = $bindable(),
+    mouseDownOnTimeline = $bindable(),
     index,
     baseTrackHeight,
     deleteTrack,
@@ -66,13 +67,6 @@
     $effect(() => {
       trackAreaStartX = trackAreaStartXValue;
     });
-
-    $effect(() => {
-      if (trackArea != null) {
-        trackAreaEndX = trackArea.getBoundingClientRect().right;
-        trackAreaStartY = trackArea.getBoundingClientRect().top;
-      }
-    });
   }
 
   function handleDrop(event: DragEvent) {
@@ -81,7 +75,6 @@
     const mediaItem = mediaPool.find(
       (mediaItem: MediaItem) => mediaItem.id === mediaItemId,
     );
-    console.log(mediaItem);
     addMediaItemToTrackAsClip(mediaItem.id, track.id);
   }
 </script>

@@ -2,8 +2,10 @@
   let { clip = $bindable(), track = $bindable(), index } = $props();
 
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
+  import * as Popover from "$lib/components/ui/popover/index.js";
+  import { Input } from "$lib/components/ui/input/index.js";
 
-  import { Trash } from "@lucide/svelte";
+  import { Trash, Pencil } from "@lucide/svelte";
 
   import Waveform from "$lib/components/timecrash/Waveform.svelte";
 
@@ -25,7 +27,26 @@
   </ContextMenu.Trigger>
   <ContextMenu.Content>
     <span class="px-1 py-2 text-sm uppercase text-zinc-600">Clip Options</span>
-    <ContextMenu.Item onclick={removeThisClip}><Trash />Remove</ContextMenu.Item
-    >
+    <ContextMenu.Item onclick={removeThisClip}>
+      <Trash />Remove
+    </ContextMenu.Item>
+    <ContextMenu.Item>
+      <Popover.Root>
+        <Popover.Trigger>
+          <Pencil />Rename
+        </Popover.Trigger>
+        <Popover.Content>
+          <div class="flex flex-col gap-4">
+            <span>Rename Clip</span>
+            <Input
+              placeholder={clip.mediaItem.name}
+              onchange={(e) => {
+                clip.mediaItem.name = e.target.value;
+              }}
+            />
+          </div>
+        </Popover.Content>
+      </Popover.Root>
+    </ContextMenu.Item>
   </ContextMenu.Content>
 </ContextMenu.Root>

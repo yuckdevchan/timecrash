@@ -13,9 +13,15 @@ export type MediaItem = {
   type: string;
   size: number;
   lastModified: number;
+  file?: File;
+  blob?: Blob;
+  available: boolean;
+};
+
+export interface AudioMediaItem extends MediaItem {
   channelCount: number;
   waveform: Waveform;
-};
+}
 
 export type Clip = {
   id: string;

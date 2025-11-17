@@ -3,7 +3,7 @@
   import * as Popover from "$lib/components/ui/popover/index.js";
   import { Slider } from "$lib/components/ui/slider/index.js";
   import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-  import { Button } from "$lib/components/ui/button/index.js";
+  import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
 
   import NoMedia from "$lib/components/timecrash/NoMedia.svelte";
   import AddTrackPopover from "$lib/components/timecrash/AddTrackPopover.svelte";
@@ -15,6 +15,7 @@
     FilePlay,
     Scaling,
     Import,
+    Link2,
     Plus,
     Pencil,
     Trash2,
@@ -71,6 +72,38 @@
       speed: 1,
     });
   }
+
+  let newMediaURL = $state("https://supersonic.software/clues/3/winner.mp3");
+  let uploadFromURLPopoverOpen = $state(false);
+
+  async function uploadFromURL() {
+    const url = newMediaURL;
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const blob = await response.blob();
+        let name: string;
+        try {
+          name = url.split("/")[url.split("/").length - 1];
+        } catch {
+          name = "Untitled";
+        }
+        const mediaItem: MediaItem = {
+          id: crypto.randomUUID(),
+          name: name,
+          type: blob.type,
+          size: blob.size,
+          // lastModified: blob.lastModified,
+          blob: blob,
+        };
+        mediaPool.push(mediaItem);
+        newMediaURL = "";
+        uploadFromURLPopoverOpen = false;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 </script>
 
 <Input
@@ -93,8 +126,26 @@
       document.getElementById("fileSelector").click();
     }}
   >
-    <Import /> Import Media
+    <Import /> Upload from Computer
   </Button>
+  <Popover.Root>
+    <Popover.Trigger
+      class={buttonVariants({ variant: "timecrashTopButtons" })}
+      bind:open={uploadFromURLPopoverOpen}
+    >
+      <Link2 /> Upload from URL
+    </Popover.Trigger>
+    <Popover.Content>
+      <div class="flex flex-col gap-4">
+        <span>Upload Media from URL</span>
+        <Input
+          bind:value={newMediaURL}
+          placeholder="e.g. https://example.com/hey-jude.mp3"
+        />
+        <Button onclick={uploadFromURL}>Upload</Button>
+      </div>
+    </Popover.Content>
+  </Popover.Root>
 </div>
 
 <section class="p-2">
@@ -125,7 +176,7 @@
     <ScrollArea class="h-175">
       <NoMedia mediaPoolSize={mediaPool.length} />
       {#each mediaPool as file, index (file.id)}
-        <audio src={URL.createObjectURL(file.file)}></audio>
+        <!-- <audio src={URL.createObjectURL(file.file)}></audio> -->
         <ContextMenu.Root>
           <ContextMenu.Trigger>
             <li
@@ -165,7 +216,9 @@
                     >{Math.round(file.size / 1000000, 3)} MB</span
                   >
                   <span class="text-zinc-600"
-                    >{formatUnixTimestamp(file.lastModified)}</span
+                    >{file.lastModified
+                      ? formatUnixTimestamp(file.lastModified)
+                      : ""}</span
                   >
                 </div>
               </div>

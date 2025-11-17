@@ -2,6 +2,10 @@
 
 ## half / unimplemented features
 - [ ] project conflict resolution
+- [ ] view panels
+    - [ ] option to choose which side panels go on
+    - [ ] detachable panels?
+    - [ ] save view panel settings that aren't in project to user settings, stored in browser
 - [ ] saving
     - [ ] autosave
     - [ ] save to filesystem without dialog
@@ -22,6 +26,7 @@
         - [ ] video / audio ungrouping
     - [ ] midi
         - [ ] piano roll editor
+        - [ ] software instrumentation controllable with keyboard
         - [ ] change soundfont
 - [ ] exporting
 - [ ] media pool
@@ -36,10 +41,17 @@
              - [ ] metadata
          - [ ] image preview
              - [ ] metadata
+         - [ ] midi preview
+             - [ ] metadata
+             - [ ] piano roll preview
+             - [ ] soundfont preview
 - [ ] settings
     - [ ] keyboard shortcuts
         - [ ] changing
         - [ ] keymaps to choose from (e.g. logic pro, audacity etc.)
+
+## behavioural & organizational bugs
+- [ ] timecrash library files in src/lib/timecrash should be moved to src/lib, as now that timecrash has its own repo, this is redundant
 
 ## unimplemented visual polish & bugs
 - [ ] bottom border of a track doesn't pixel match with the top border of a newly added track

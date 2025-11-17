@@ -4,7 +4,7 @@
 A web-based digital media workstation that cares, made by a human.
 
 ## Target feature list
-[Full list here](https://github.com/yuckdevchan/timecrash/blob/main/bugs.md)
+[Full list here](https://github.com/yuckdevchan/timecrash/blob/main/todo.md)
 - Digital audio, MIDI and (basic) video editing
 - Physical and software instrument workflow support
 - A well designed, intuitive, fast and frictionless user experience

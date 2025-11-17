@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Triangle } from "@lucide/svelte";
+  import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
+
+  import { Triangle, SkipBack } from "@lucide/svelte";
 
   let {
     children,
@@ -21,7 +23,7 @@
 </script>
 
 <div
-  class="absolute z-1 h-full w-1 border border-red-700 bg-red-500"
+  class="absolute z-1 h-full w-1 border border-red-700 bg-red-500 pointer-events-none"
   class:hidden={trackAreaStartX <= 0 || !playhead.exists}
   style="left: {playhead.pos * viewScale + trackAreaStartX}px;"
 >
@@ -42,19 +44,29 @@
     >
     </button>
 
-    <button
-      class="h-full focus:outline-none flex-1"
-      aria-label="Click to set playhead position to cursor; Double click to set playhead position to zero"
-      onclick={(event: MouseEvent) => {
-        playhead.pos = Math.max(
-          0,
-          (event.clientX - trackAreaStartX) / viewScale,
-        );
-      }}
-      ondblclick={() => {
-        playhead.pos = 0;
-      }}
-    >
-    </button>
+    <ContextMenu.Root>
+      <ContextMenu.Trigger
+        class="h-full focus:outline-none flex-1"
+        aria-label="Click to set playhead position to cursor; Double click to set playhead position to zero"
+        onclick={(event: MouseEvent) => {
+          playhead.pos = Math.max(
+            0,
+            (event.clientX - trackAreaStartX) / viewScale,
+          );
+        }}
+        ondblclick={() => {
+          playhead.pos = 0;
+        }}
+      ></ContextMenu.Trigger>
+      <ContextMenu.Content>
+        <ContextMenu.Item
+          onclick={() => {
+            playhead.pos = 0;
+          }}
+        >
+          <SkipBack />Reset Playhead Position
+        </ContextMenu.Item>
+      </ContextMenu.Content>
+    </ContextMenu.Root>
   </div>
 {/if}

@@ -25,14 +25,16 @@
   class:hidden={trackAreaStartX <= 0 || !playhead.exists}
   style="left: {playhead.pos * viewScale + trackAreaStartX}px;"
 >
-  <Triangle class="-translate-[11px] rotate-180 fill-red-500 stroke-red-700" />
+  <Triangle
+    class="-translate-[0.6725em] rotate-180 fill-red-500 stroke-red-700"
+  />
 </div>
 
 {@render children()}
 
 {#if playhead.exists}
   <button
-    class="border-r-2 border-zinc-900 h-full flex flex-col items-center justify-between focus:outline-none"
+    class="border-r-2 border-zinc-500 bg-zinc-300 dark:border-zinc-900 dark:bg-neutral-950 h-full flex flex-col items-center justify-between focus:outline-none"
     style="width: {trackAreaStartX}px;"
     ondblclick={addTrackWithLastTrackType}
     aria-label="Double click to add a new audio track"

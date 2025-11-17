@@ -2,8 +2,9 @@
 
 ## half / unimplemented features
 - [ ] project conflict resolution
-- [ ] autosave
-- [ ] save to filesystem without dialog
+- [ ] saving
+    - [ ] autosave
+    - [ ] save to filesystem without dialog
 - [ ] clips
     - [ ] location
     - [ ] length
@@ -22,6 +23,7 @@
     - [ ] midi
         - [ ] piano roll editor
         - [ ] change soundfont
+- [ ] exporting
 - [ ] media pool
     - [ ] import from url
     - [ ] media preview

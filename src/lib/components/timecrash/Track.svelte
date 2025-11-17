@@ -21,6 +21,7 @@
   type Props = {
     track: TrackLike;
     trackAreaStartX: number;
+    trackAreaStartY: number;
     playhead: Playhead;
     index: number;
     baseTrackHeight: number;
@@ -37,6 +38,7 @@
   let {
     track = $bindable(),
     trackAreaStartX = $bindable(),
+    trackAreaEndX = $bindable(),
     trackAreaStartY = $bindable(),
     playhead = $bindable(),
     index,
@@ -52,21 +54,21 @@
   }: Props = $props();
 
   let trackAreaStartXValue = $state(0);
-  let trackAreaStartYValue = $state(0);
+  let trackArea: HTMLDivElement | null = $state(null);
 
   if (index === 0 && inProjectId === selectedProjectId) {
     $effect(() => {
       trackAreaStartX = trackAreaStartXValue;
-      trackAreaStartY = trackAreaStartYValue;
+    });
+
+    $effect(() => {
+      if (trackArea != null) {
+        trackAreaEndX = trackArea.getBoundingClientRect().right;
+        trackAreaStartY = trackArea.getBoundingClientRect().top;
+      }
     });
   }
-
-  // $effect(() => {
-  // console.log(`${selectedProjectId}, ${inProjectId}, ${track.id}`);
-  // });
 </script>
-
-<!-- {track.id} -->
 
 {#snippet trackControlBox(
   index: number,
@@ -75,11 +77,12 @@
   deleteTrack: (index: number) => void,
 )}
   <span
-    class="flex h-full flex-col items-center justify-between bg-gray-300 font-mono text-gray-700 dark:bg-gray-600 dark:text-gray-300"
+    class="flex h-full flex-col items-center justify-between bg-gray-300 border-t-2 border-zinc-500 font-mono text-gray-700 dark:bg-gray-600 dark:text-gray-300 dark:border-zinc-900"
+    class:border-b-2={index === trackCount - 1}
   >
     <Button
       variant="ghost"
-      class="w-full rounded-none hover:bg-red-600! transition-colors duration-200"
+      class="w-full rounded-none hover:bg-red-600! transition-colors duration-200 hover:text-white!"
       onclick={() => deleteTrack(index)}
     >
       <X class="h-5 w-5" />
@@ -88,7 +91,7 @@
   </span>
 
   <div
-    class="w-75 flex flex-col border-r-2 border-t-2 border-zinc-900 bg-zinc-900"
+    class="w-75 flex flex-col border-r-2 border-t-2 dark:border-zinc-900 dark:bg-zinc-900 border-zinc-500 bg-zinc-200"
     class:border-b-2={index === trackCount - 1}
   >
     <div class="mr-2 flex">
@@ -125,7 +128,6 @@
     </div>
   </div>
 {/snippet}
-
 <ContextMenu.Root>
   <ContextMenu.Trigger>
     <div
@@ -148,7 +150,8 @@
       {/if}
       <!-- CLIP AREA -->
       <div
-        class="relative flex w-full border-t-2 border-zinc-900 bg-neutral-950 focus:outline-none"
+        bind:this={trackArea}
+        class="relative flex w-full border-t-2 dark:border-zinc-900 dark:bg-neutral-950 focus:outline-none"
         class:border-b-2={index === trackCount - 1}
         role="row"
         tabindex={index}

@@ -61,6 +61,7 @@
   let showMediaPool = $state(true);
   let showCreateProjectDialog = $state(false);
   let trackAreaStartX = $state(0);
+  let trackAreaEndX = $state(0);
   let trackAreaStartY = $state(0);
   let viewScale = $state(25);
   let autoSizeTracks = $state(false);
@@ -214,7 +215,11 @@
   function handleMouseDown(e: MouseEvent) {
     if (e.button === 0) {
       mouseDown = true;
-      if (e.clientX >= trackAreaStartX) {
+      if (
+        e.clientX >= trackAreaStartX &&
+        e.clientX <= trackAreaEndX &&
+        e.clientY >= trackAreaStartY
+      ) {
         if (lessThan200msSinceLastMouseDown) {
           playhead.pos = 0;
           return;
@@ -306,7 +311,7 @@
       />
       {#each Object.keys(projects) as project (projects[project].id)}
         <Tabs.Content value={projects[project].id} class="h-full">
-          <div class="flex w-full bg-zinc-900">
+          <div class="flex w-full dark:bg-zinc-900 bg-zinc-300">
             <Popover.Root>
               <Popover.Trigger
                 class={buttonVariants({ variant: "timecrashTopButtons" })}
@@ -332,6 +337,7 @@
               <Track
                 bind:track={tracks[index]}
                 bind:trackAreaStartX
+                bind:trackAreaEndX
                 bind:trackAreaStartY
                 bind:playhead
                 {index}

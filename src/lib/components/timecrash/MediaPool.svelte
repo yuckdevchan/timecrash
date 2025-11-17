@@ -86,7 +86,7 @@
 <div class="h-9 flex items-center">
   <h2 class="pl-3 font-medium">Media Pool</h2>
 </div>
-<div class="flex w-full bg-zinc-900">
+<div class="flex w-full dark:bg-zinc-900 bg-zinc-300">
   <Button
     variant="timecrashTopButtons"
     onclick={() => {
@@ -130,7 +130,7 @@
           <ContextMenu.Trigger>
             <li
               draggable="true"
-              class="flex items-center gap-1 p-{mediaPoolDensity} hover:bg-zinc-800"
+              class="flex items-center gap-1 p-{mediaPoolDensity} hover:bg-zinc-100 dark:hover:bg-zinc-800"
               class:border-b-2={index != mediaPool.length - 1}
               class:rounded-t-md={index === 0}
               class:rounded-b-md={index === mediaPool.length - 1}

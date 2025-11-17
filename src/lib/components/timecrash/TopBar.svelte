@@ -116,7 +116,7 @@
   <div class="flex h-9 max-h-9 min-h-9 items-center gap-2 pt-1">
     <Button
       variant="ghost"
-      class="flex h-9 max-h-full items-center gap-1 rounded-md border bg-zinc-900 p-[3px] text-sm"
+      class="flex h-9 max-h-full items-center gap-1 rounded-md border dark:bg-zinc-900 p-[3px] text-sm"
       onclick={() => {
         showCommandRunner = true;
       }}
@@ -127,7 +127,7 @@
       <Kbd.Root>K</Kbd.Root>
     </Button>
     <div
-      class="flex h-9 max-h-full items-center gap-1 rounded-md border bg-zinc-900 p-[3px]"
+      class="flex h-9 max-h-full items-center gap-1 rounded-md border dark:bg-zinc-900 p-[3px]"
     >
       <ButtonGroup.Root>
         <Button
@@ -163,7 +163,7 @@
       </ButtonGroup.Root>
     </div>
     <div
-      class="flex h-9 max-h-full items-center gap-1 rounded-md border bg-zinc-900 p-[3px] pl-2 pr-2"
+      class="flex h-9 max-h-full items-center gap-1 rounded-md border dark:bg-zinc-900 p-[3px] pl-2 pr-2"
     >
       <input
         type="number"
@@ -177,7 +177,7 @@
       <span>BPM</span>
     </div>
     <div
-      class="w-15 flex h-9 max-h-full flex-col items-center justify-center rounded-md border bg-zinc-900 p-[3px] text-[0.65rem] font-bold"
+      class="w-15 flex h-9 max-h-full flex-col items-center justify-center rounded-md border dark:bg-zinc-900 p-[3px] text-[0.65rem] font-bold"
       class:border-red-500={(timeSignature[0] & (timeSignature[1] - 1)) !== 0}
     >
       <input
@@ -200,7 +200,7 @@
       />
     </div>
     <span
-      class="w-25 flex h-9 max-h-full appearance-none items-center justify-center rounded-md border bg-zinc-900 p-[3px] text-center font-mono focus:outline-none"
+      class="w-25 flex h-9 max-h-full appearance-none items-center justify-center rounded-md border dark:bg-zinc-900 p-[3px] text-center font-mono focus:outline-none"
       >{secondsToDurationString(playhead.pos)}</span
     >
   </div>

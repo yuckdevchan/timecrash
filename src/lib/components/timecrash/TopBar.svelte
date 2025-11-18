@@ -29,6 +29,7 @@
     baseTrackHeight = $bindable(),
     autoSizeTracks = $bindable(),
     showCommandRunner = $bindable(),
+    showSaveProjectDialog = $bindable(),
     saveProject,
     openProject,
   } = $props();
@@ -60,7 +61,11 @@
           Open Project
           <Menubar.Shortcut>⌘O</Menubar.Shortcut>
         </Menubar.Item>
-        <Menubar.Item onclick={saveProject}>
+        <Menubar.Item
+          onclick={() => {
+            showSaveProjectDialog = true;
+          }}
+        >
           Save Project
           <Menubar.Shortcut>⌘S</Menubar.Shortcut>
         </Menubar.Item>

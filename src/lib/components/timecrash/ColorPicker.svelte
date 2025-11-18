@@ -11,6 +11,8 @@
   import colors from "$lib/colors.ts";
 
   let {
+    value = $bindable(),
+    open = $bindable(false),
     withButton = true,
     title = "Color Picker",
     buttonVariant = "timecrashTopButtons",
@@ -20,7 +22,7 @@
 </script>
 
 {#snippet popoverContent()}
-  <Popover.Content class="w-180 max-h-200">
+  <Popover.Content class="w-210 max-h-180">
     <div class="flex flex-col gap-4">
       <span class="text-xl font-bold">{title}</span>
       <span class="font-semibold text-lg">Swatches</span>
@@ -36,59 +38,61 @@
         </Tabs.List>
         <Tabs.Content value="yourSwatches">
           <div class="dark">
-            <CustomColorPicker />
+            <CustomColorPicker label="Add a Color" />
           </div>
         </Tabs.Content>
         {#each Object.keys(colors) as palette (palette)}
           <Tabs.Content value={palette}>
-            <ScrollArea class="h-150">
+            <ScrollArea class="h-140">
               {@const thisPalette = colors[palette]}
-              <div class="flex flex-col gap-2 items-center">
-                {#if thisPalette.shadeNames}
-                  <div class="flex gap-2 ml-20">
-                    {#each thisPalette.shadeNames as shadeName (thisPalette.name + shadeName)}
-                      <span class="w-10 text-center">{shadeName}</span>
-                    {/each}
-                  </div>
-                {/if}
-                {#each Object.keys(thisPalette.colors) as color (color)}
-                  <div class="flex gap-2">
-                    <span class="flex items-center w-18"
-                      >{color[0].toUpperCase()}{color.slice(1)}</span
-                    >
-                    {#each thisPalette.colors[color] as shade (thisPalette.name + color + shade)}
-                      <ContextMenu.Root>
-                        <ContextMenu.Trigger
-                          class="w-10 h-10 rounded-sm"
-                          style="background-color: {shade};"
-                        ></ContextMenu.Trigger>
-                        <ContextMenu.Content>
-                          <ContextMenu.Item
-                            ><ClipboardCopy />Copy in HEX</ContextMenu.Item
-                          >
-                          <ContextMenu.Item
-                            ><ClipboardCopy />Copy in RGB</ContextMenu.Item
-                          >
-                          <ContextMenu.Item
-                            ><ClipboardCopy />Copy in HSL</ContextMenu.Item
-                          >
-                          <ContextMenu.Item
-                            ><ClipboardCopy />Copy in HSV</ContextMenu.Item
-                          >
-                          <ContextMenu.Item
-                            ><ClipboardCopy />Copy in CMYK</ContextMenu.Item
-                          >
-                          <ContextMenu.Item
-                            ><ClipboardCopy />Copy in oklch</ContextMenu.Item
-                          >
-                          <ContextMenu.Item
-                            ><ClipboardCopy />Copy in Native</ContextMenu.Item
-                          >
-                        </ContextMenu.Content>
-                      </ContextMenu.Root>
-                    {/each}
-                  </div>
-                {/each}
+              <div class="flex flex-col items-center">
+                <div class="flex flex-col gap-2">
+                  {#if thisPalette.shadeNames}
+                    <div class="flex gap-2 ml-27">
+                      {#each thisPalette.shadeNames as shadeName (thisPalette.name + shadeName)}
+                        <span class="w-10 text-center">{shadeName}</span>
+                      {/each}
+                    </div>
+                  {/if}
+                  {#each Object.keys(thisPalette.colors) as color (color)}
+                    <div class="flex gap-2">
+                      <span class="flex items-center w-25"
+                        >{color[0].toUpperCase()}{color.slice(1)}</span
+                      >
+                      {#each thisPalette.colors[color] as shade (thisPalette.name + color + shade)}
+                        <ContextMenu.Root>
+                          <ContextMenu.Trigger
+                            class="w-10 h-10 rounded-sm shadow-md"
+                            style="background-color: {shade};"
+                          ></ContextMenu.Trigger>
+                          <ContextMenu.Content>
+                            <ContextMenu.Item
+                              ><ClipboardCopy />Copy in HEX</ContextMenu.Item
+                            >
+                            <ContextMenu.Item
+                              ><ClipboardCopy />Copy in RGB</ContextMenu.Item
+                            >
+                            <ContextMenu.Item
+                              ><ClipboardCopy />Copy in HSL</ContextMenu.Item
+                            >
+                            <ContextMenu.Item
+                              ><ClipboardCopy />Copy in HSV</ContextMenu.Item
+                            >
+                            <ContextMenu.Item
+                              ><ClipboardCopy />Copy in CMYK</ContextMenu.Item
+                            >
+                            <ContextMenu.Item
+                              ><ClipboardCopy />Copy in oklch</ContextMenu.Item
+                            >
+                            <ContextMenu.Item
+                              ><ClipboardCopy />Copy in Native</ContextMenu.Item
+                            >
+                          </ContextMenu.Content>
+                        </ContextMenu.Root>
+                      {/each}
+                    </div>
+                  {/each}
+                </div>
               </div>
             </ScrollArea>
           </Tabs.Content>
@@ -99,7 +103,7 @@
 {/snippet}
 
 {#if withButton}
-  <Popover.Root open={true}>
+  <Popover.Root bind:open>
     <Popover.Trigger
       class={buttonVariants({ variant: buttonVariant })}
       aria-label="Select Color"

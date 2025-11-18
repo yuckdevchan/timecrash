@@ -4,6 +4,8 @@
   import * as Popover from "$lib/components/ui/popover/index.js";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
+  import { Checkbox } from "$lib/components/ui/checkbox/index.js";
+  import { Label } from "$lib/components/ui/label/index.js";
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
 
   import { Plus, Settings2 } from "@lucide/svelte";
@@ -60,6 +62,7 @@
   });
 
   let showDeleteContextMenu = $state(false);
+  let showSaveProjectDialog = $state(false);
   let showProjectConflictDialog = $state(false);
   let showCommandRunner = $state(false);
   let showMediaPool = $state(true);
@@ -257,7 +260,7 @@
 </script>
 
 <svelte:head>
-  <title>timecrash</title>
+  <title>timecrash app</title>
   <meta property="og:title" content="timecrash" />
   <meta property="og:description" content="multimedia workstation" />
   <meta property="og:url" content="https://supersonic.software/timecrash" />
@@ -268,6 +271,25 @@
 <svelte:window onmousemove={handleMouseMove} />
 
 <ContextMenu.Root bind:open={showDeleteContextMenu}></ContextMenu.Root>
+
+<!-- <Dialog.Root bind:open={showSaveProjectDialog}> -->
+<Dialog.Root open={true}>
+  <Dialog.Content>
+    <Dialog.Header>Save Project</Dialog.Header>
+    <div class="flex gap-2">
+      <Checkbox id="saveViewOptions" checked={true} />
+      <Label for="saveViewOptions">Bundle media files</Label>
+    </div>
+    <div class="flex gap-2">
+      <Checkbox id="saveViewOptions" checked={true} />
+      <Label for="saveViewOptions">Save View Options</Label>
+    </div>
+    <div class="flex gap-2">
+      <Checkbox id="savePalettes" checked={true} />
+      <Label for="savePalettes">Save Custom Color Palettes</Label>
+    </div>
+  </Dialog.Content>
+</Dialog.Root>
 
 <Dialog.Root open={showProjectConflictDialog}>
   <Dialog.Content class="[&>button:last-child]:hidden">
@@ -290,6 +312,7 @@
   bind:showCreateProjectDialog
   bind:autoSizeTracks
   bind:showCommandRunner
+  bind:showSaveProjectDialog
   {startStopRecording}
   {playPause}
   {rewindPlayhead}
@@ -306,6 +329,7 @@
   bind:baseTrackHeight
   bind:autoSizeTracks
   bind:showCommandRunner
+  bind:showSaveProjectDialog
   {saveProject}
   {openProject}
 />

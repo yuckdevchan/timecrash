@@ -67,6 +67,8 @@
       },
     },
     "Save Project": {
+      key: "s",
+      ctrl: true,
       action: saveProject,
     },
     "Quick Add New Track": {

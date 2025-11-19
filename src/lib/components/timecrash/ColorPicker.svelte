@@ -67,7 +67,7 @@
                   <div class="flex ml-27" class:gap-2={!compactMode}>
                     {#each thisPalette.shadeNames as shadeName (thisPalette.name + shadeName)}
                       <span
-                        class="w-{compactMode ? '4' : '10'} text-center"
+                        class="w-{compactMode ? '4' : '10'} text-center text-sm"
                         class:text-xs={compactMode}>{shadeName}</span
                       >
                     {/each}
@@ -89,9 +89,9 @@
                               <ContextMenu.Trigger
                                 class="w-{compactMode
                                   ? '5'
-                                  : '10'} h-{compactMode
+                                  : '8'} h-{compactMode
                                   ? '5'
-                                  : '10'} shadow-md {compactMode
+                                  : '8'} shadow-md {compactMode
                                   ? ''
                                   : 'rounded-sm'}"
                                 style="background-color: {shade};"

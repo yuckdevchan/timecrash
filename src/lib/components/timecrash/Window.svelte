@@ -35,10 +35,10 @@
   class="flex flex-col absolute bg-popover z-10 rounded-md border shadow-md"
   style={`top:${y}px; left:${x}px;`}
   role="dialog"
-  aria-labelledby="window-title"
+  aria-labelledby="windowTitle"
 >
   <div
-    id="window-title"
+    id="windowTitle"
     class="flex items-center justify-between border-b select-none rounded-t-md"
     class:bg-neutral-950={dragging}
     onmousedown={handleMouseDown}

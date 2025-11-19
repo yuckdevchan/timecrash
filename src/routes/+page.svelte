@@ -272,8 +272,8 @@
 
 <ContextMenu.Root bind:open={showDeleteContextMenu}></ContextMenu.Root>
 
-<!-- <Dialog.Root bind:open={showSaveProjectDialog}> -->
-<Dialog.Root open={true}>
+<Dialog.Root bind:open={showSaveProjectDialog}>
+  <!-- <Dialog.Root open={true}> -->
   <Dialog.Content>
     <Dialog.Header>Save Project</Dialog.Header>
     <div class="flex gap-2">
@@ -360,7 +360,7 @@
               />
             </Popover.Root>
             <div class="flex">
-              <ColorPicker />
+              <ColorPicker big />
               <Popover.Root>
                 <Popover.Trigger
                   class={buttonVariants({ variant: "timecrashTopButtons" })}

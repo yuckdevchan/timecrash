@@ -91,7 +91,7 @@
   >
     <Button
       variant="ghost"
-      class="w-full rounded-none hover:bg-red-600! transition-colors duration-200 hover:text-white!"
+      class="w-full rounded-none hover:bg-red-500! transition-colors duration-200 hover:text-white!"
       onclick={() => deleteTrack(index)}
     >
       <X class="h-5 w-5" />

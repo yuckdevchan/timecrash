@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
@@ -176,6 +177,7 @@
       `${projects[selectedProjectId].name}.timecrash`,
     );
     dlAnchorElem.click();
+    showSaveProjectDialog = false;
   }
 
   function openProject() {
@@ -288,24 +290,25 @@
       <Checkbox id="savePalettes" checked={true} />
       <Label for="savePalettes">Save Custom Color Palettes</Label>
     </div>
+    <Button onclick={saveProject}>Save</Button>
   </Dialog.Content>
 </Dialog.Root>
 
-<Dialog.Root open={showProjectConflictDialog}>
-  <Dialog.Content class="[&>button:last-child]:hidden">
-    <Dialog.Header>Resolve Project Conflict</Dialog.Header>
-    <Dialog.Description
-      >The opened project conflicts with an existing open project.</Dialog.Description
+<AlertDialog.Root open={showProjectConflictDialog}>
+  <AlertDialog.Content class="[&>button:last-child]:hidden">
+    <AlertDialog.Header>Resolve Project Conflict</AlertDialog.Header>
+    <AlertDialog.Description
+      >The opened project conflicts with an existing open project.</AlertDialog.Description
     >
     <Button>Keep existing open project</Button>
     <Button>Keep newly opened project</Button>
     <Button>Keep Both</Button>
-    <Dialog.Description class="text-center">
+    <AlertDialog.Description class="text-center">
       Selecting 'Keep Both' marks the newly opened project as a separate project
       from the existing open project.
-    </Dialog.Description>
-  </Dialog.Content>
-</Dialog.Root>
+    </AlertDialog.Description>
+  </AlertDialog.Content>
+</AlertDialog.Root>
 
 <CommandRunner
   bind:showMediaPool

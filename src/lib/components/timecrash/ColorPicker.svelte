@@ -3,6 +3,7 @@
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
   import * as Tooltip from "$lib/components/ui/tooltip/index.js";
+  import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
   import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
   import { Switch } from "$lib/components/ui/switch/index.js";
@@ -10,7 +11,7 @@
   import CustomColorPicker from "svelte-awesome-color-picker";
   import Window from "$lib/components/timecrash/Window.svelte";
 
-  import { Scaling, SwatchBook, ClipboardCopy } from "@lucide/svelte";
+  import { Plus, FileUp, SwatchBook, ClipboardCopy } from "@lucide/svelte";
 
   import colors from "$lib/colors.ts";
   import Label from "../ui/label/label.svelte";
@@ -26,13 +27,12 @@
   } = $props();
 
   // min 0, max 2
-  let density: number = $state(0);
+  let density: number = $state(1);
 
-  // Configuration for table density
   const densities = [
     {
-      cellPadding: "p-0", // Tighter cell spacing
-      shadeNameTextSize: "text-xs",
+      cellPadding: "p-0",
+      shadeNameTextSize: "text-[2px]",
       colorNameTextSize: "text-xs",
       swatchDimensions: "w-5 h-5",
       swatchRounding: "rounded-none",
@@ -73,6 +73,8 @@
     <span class="text-xl font-bold">{title}</span>
     <div class="flex items-center justify-between">
       <span class="font-semibold text-lg">Palettes</span>
+    </div>
+    <div class="flex gap-2">
       <Label for="compactMode">Compact Mode</Label>
       <Switch bind:checked={compactMode} id="compactMode" />
     </div>
@@ -90,6 +92,24 @@
             {thisPalette.name}
           </Tabs.Trigger>
         {/each}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger
+            class="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 ml-1 flex h-full w-8 items-center justify-center rounded-sm"
+          >
+            <Plus />
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Label>Add Palette</DropdownMenu.Label>
+            <DropdownMenu.Item><Plus />Create new...</DropdownMenu.Item>
+            <DropdownMenu.Separator />
+            <DropdownMenu.Item
+              ><FileUp />Import .ase file (Adobe Swatch Exchange)</DropdownMenu.Item
+            >
+            <DropdownMenu.Item
+              ><FileUp />Import .tcpalette (Timecrash Palette)</DropdownMenu.Item
+            >
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
       </Tabs.List>
 
       <Tabs.Content value="yourPalettes">

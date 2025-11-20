@@ -64,6 +64,7 @@
 		"js-confetti": "^0.13.1",
 		"marked": "^16.4.2",
 		"melt": "^0.41.0",
-		"mode-watcher": "^1.1.0"
+		"mode-watcher": "^1.1.0",
+		"readase": "^1.0.0"
 	}
 }

@@ -8,10 +8,17 @@
   import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
   import { Switch } from "$lib/components/ui/switch/index.js";
   import { Slider } from "$lib/components/ui/slider/index.js";
+  import { toast } from "svelte-sonner";
   import CustomColorPicker from "svelte-awesome-color-picker";
   import Window from "$lib/components/timecrash/Window.svelte";
 
-  import { Plus, FileUp, SwatchBook, ClipboardCopy } from "@lucide/svelte";
+  import {
+    Download,
+    Plus,
+    FileUp,
+    SwatchBook,
+    ClipboardCopy,
+  } from "@lucide/svelte";
 
   import colors from "$lib/colors.ts";
   import Label from "../ui/label/label.svelte";
@@ -32,17 +39,29 @@
   const densities = [
     {
       cellPadding: "p-0",
-      shadeNameTextSize: "text-[2px]",
+      shadeNameTextSize: "text-[7px]",
       colorNameTextSize: "text-xs",
       swatchDimensions: "w-5 h-5",
       swatchRounding: "rounded-none",
+      swatchBorder: "border-1 border-transparent",
+      swatchShadow: "",
+      swatchDisplay: "block",
+      swatchReset: "m-0 p-0 leading-none",
+      tableWidth: "w-auto",
+      tableLayout: "table-auto",
     },
     {
-      cellPadding: "p-1",
+      cellPadding: "p-[4px]",
       shadeNameTextSize: "text-xs",
       colorNameTextSize: "text-sm",
-      swatchDimensions: "w-6 h-6",
+      swatchDimensions: "w-9 h-9",
       swatchRounding: "rounded-sm",
+      swatchBorder: "border-2 border-transparent",
+      swatchShadow: "shadow-sm",
+      swatchDisplay: "block",
+      swatchReset: "m-0 p-0 leading-none",
+      tableWidth: "w-auto",
+      tableLayout: "table-auto",
     },
     {
       cellPadding: "p-2",
@@ -50,9 +69,17 @@
       colorNameTextSize: "text-base",
       swatchDimensions: "w-8 h-8",
       swatchRounding: "rounded-md",
+      swatchBorder: "border border-transparent",
+      swatchShadow: "shadow-sm",
+      swatchDisplay: "block",
+      swatchReset: "m-0 p-0 leading-none",
+      tableWidth: "w-full",
+      tableLayout: "table-auto",
     },
   ];
 
+  open = true;
+  let selectedPalette = $state(Object.keys(colors)[0]);
   let compactMode: boolean = $state(density === 0);
 
   $effect(() => {
@@ -62,21 +89,80 @@
       density = 1;
     }
   });
-
-  open = true;
-
-  let selectedPalette = $state(Object.keys(colors)[0]);
 </script>
+
+{#snippet swatch(
+  shade: string,
+  shadeIndex: number,
+  colorNameTitleCase: string,
+  thisPalette: any,
+)}
+  <div class="flex items-center justify-center">
+    <Tooltip.Root>
+      <Tooltip.Trigger>
+        <ContextMenu.Root>
+          <ContextMenu.Trigger
+            class="{densities[density].swatchDimensions} {densities[density]
+              .swatchShadow} {densities[density].swatchBorder} {densities[
+              density
+            ].swatchDisplay} {densities[density]
+              .swatchReset} hover:border-foreground/20 {densities[density]
+              .swatchRounding}"
+            style="background-color: {shade};"
+          ></ContextMenu.Trigger>
+          <ContextMenu.Content>
+            <ContextMenu.Item
+              ><ClipboardCopy class="mr-2 h-4 w-4" />Copy in HEX</ContextMenu.Item
+            >
+            <ContextMenu.Item
+              ><ClipboardCopy class="mr-2 h-4 w-4" />Copy in RGB</ContextMenu.Item
+            >
+            <ContextMenu.Item
+              ><ClipboardCopy class="mr-2 h-4 w-4" />Copy in HSL</ContextMenu.Item
+            >
+            <ContextMenu.Item
+              ><ClipboardCopy class="mr-2 h-4 w-4" />Copy in HSV</ContextMenu.Item
+            >
+            <ContextMenu.Item
+              ><ClipboardCopy class="mr-2 h-4 w-4" />Copy in CMYK</ContextMenu.Item
+            >
+            <ContextMenu.Item
+              ><ClipboardCopy class="mr-2 h-4 w-4" />Copy in oklch</ContextMenu.Item
+            >
+            <ContextMenu.Item
+              onclick={() => {
+                toast.success("Copied to clipboard!");
+                navigator.clipboard.writeText(shade);
+              }}
+            >
+              <ClipboardCopy class="mr-2 h-4 w-4" />Copy in Native
+            </ContextMenu.Item>
+            <ContextMenu.Separator />
+            <ContextMenu.Item>
+              <Download class="mr-2 h-4 w-4" />Download as .ase
+            </ContextMenu.Item>
+            <ContextMenu.Item onclick={downloadTCSwatch}>
+              <Download class="mr-2 h-4 w-4" />Download as .tcswatch
+            </ContextMenu.Item>
+          </ContextMenu.Content>
+        </ContextMenu.Root>
+      </Tooltip.Trigger>
+      <Tooltip.Content class="flex flex-col items-center">
+        <p>
+          {colorNameTitleCase}
+          {thisPalette.shadeNames[shadeIndex]}
+        </p>
+        <p class="font-mono text-xs">{shade}</p>
+      </Tooltip.Content>
+    </Tooltip.Root>
+  </div>
+{/snippet}
 
 {#snippet bigContent()}
   <div class="flex flex-col gap-4">
     <span class="text-xl font-bold">{title}</span>
     <div class="flex items-center justify-between">
       <span class="font-semibold text-lg">Palettes</span>
-    </div>
-    <div class="flex gap-2">
-      <Label for="compactMode">Compact Mode</Label>
-      <Switch bind:checked={compactMode} id="compactMode" />
     </div>
     <!-- <div class="flex items-center gap-3">
       <Scaling size={20} />
@@ -85,7 +171,6 @@
     </div> -->
     <Tabs.Root bind:value={selectedPalette}>
       <Tabs.List class="gap-1">
-        <Tabs.Trigger value="yourPalettes">Your Palettes</Tabs.Trigger>
         {#each Object.keys(colors) as palette (palette)}
           {@const thisPalette = colors[palette]}
           <Tabs.Trigger value={palette}>
@@ -112,19 +197,16 @@
         </DropdownMenu.Root>
       </Tabs.List>
 
-      <Tabs.Content value="yourPalettes">
-        <div class="dark">
-          <CustomColorPicker label="Add a Color" />
-        </div>
-      </Tabs.Content>
-
       {#each Object.keys(colors) as palette (palette)}
         <Tabs.Content value={palette}>
           <ScrollArea class="h-140 rounded-md border">
             {@const thisPalette = colors[palette]}
 
             <div class="w-full">
-              <table class="w-full border-collapse text-left">
+              <table
+                class="{densities[density].tableWidth} {densities[density]
+                  .tableLayout} border-collapse border-spacing-0 text-left"
+              >
                 <thead class="bg-muted/50 sticky top-0 z-10 backdrop-blur-sm">
                   <tr>
                     <th class="p-2"></th>
@@ -142,17 +224,16 @@
                     {/if}
                   </tr>
                 </thead>
-
                 <tbody>
                   <Tooltip.Provider delayDuration={400}>
                     {#each Object.keys(thisPalette.colors) as color (color)}
                       {@const colorNameTitleCase =
                         color[0].toUpperCase() + color.slice(1)}
 
-                      <tr class="hover:bg-muted/30 transition-colors">
+                      <tr class="hover:bg-muted/30">
                         <td
                           class="{densities[density]
-                            .cellPadding} pr-4 font-medium whitespace-nowrap {densities[
+                            .cellPadding} px-2 font-medium whitespace-nowrap {densities[
                             density
                           ].colorNameTextSize}"
                         >
@@ -163,70 +244,12 @@
                           <td
                             class="{densities[density].cellPadding} text-center"
                           >
-                            <div class="flex items-center justify-center">
-                              <Tooltip.Root>
-                                <Tooltip.Trigger>
-                                  <ContextMenu.Root>
-                                    <ContextMenu.Trigger
-                                      class="{densities[density]
-                                        .swatchDimensions} shadow-sm border border-transparent hover:border-foreground/20 transition-all {densities[
-                                        density
-                                      ].swatchRounding}"
-                                      style="background-color: {shade};"
-                                    ></ContextMenu.Trigger>
-                                    <ContextMenu.Content>
-                                      <ContextMenu.Item
-                                        ><ClipboardCopy
-                                          class="mr-2 h-4 w-4"
-                                        />Copy in HEX</ContextMenu.Item
-                                      >
-                                      <ContextMenu.Item
-                                        ><ClipboardCopy
-                                          class="mr-2 h-4 w-4"
-                                        />Copy in RGB</ContextMenu.Item
-                                      >
-                                      <ContextMenu.Item
-                                        ><ClipboardCopy
-                                          class="mr-2 h-4 w-4"
-                                        />Copy in HSL</ContextMenu.Item
-                                      >
-                                      <ContextMenu.Item
-                                        ><ClipboardCopy
-                                          class="mr-2 h-4 w-4"
-                                        />Copy in HSV</ContextMenu.Item
-                                      >
-                                      <ContextMenu.Item
-                                        ><ClipboardCopy
-                                          class="mr-2 h-4 w-4"
-                                        />Copy in CMYK</ContextMenu.Item
-                                      >
-                                      <ContextMenu.Item
-                                        ><ClipboardCopy
-                                          class="mr-2 h-4 w-4"
-                                        />Copy in oklch</ContextMenu.Item
-                                      >
-                                      <ContextMenu.Item
-                                        onclick={() =>
-                                          navigator.clipboard.writeText(shade)}
-                                      >
-                                        <ClipboardCopy
-                                          class="mr-2 h-4 w-4"
-                                        />Copy in Native
-                                      </ContextMenu.Item>
-                                    </ContextMenu.Content>
-                                  </ContextMenu.Root>
-                                </Tooltip.Trigger>
-                                <Tooltip.Content
-                                  class="flex flex-col items-center"
-                                >
-                                  <p>
-                                    {colorNameTitleCase}
-                                    {thisPalette.shadeNames[shadeIndex]}
-                                  </p>
-                                  <p class="font-mono text-xs">{shade}</p>
-                                </Tooltip.Content>
-                              </Tooltip.Root>
-                            </div>
+                            {@render swatch(
+                              shade,
+                              shadeIndex,
+                              colorNameTitleCase,
+                              thisPalette,
+                            )}
                           </td>
                         {/each}
                       </tr>
@@ -239,6 +262,10 @@
         </Tabs.Content>
       {/each}
     </Tabs.Root>
+    <div class="flex gap-2">
+      <Label for="compactMode">Compact Mode</Label>
+      <Switch bind:checked={compactMode} id="compactMode" />
+    </div>
   </div>
 {/snippet}
 

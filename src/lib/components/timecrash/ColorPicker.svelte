@@ -89,6 +89,8 @@
       density = 1;
     }
   });
+
+  function downloadTCSwatch() {}
 </script>
 
 {#snippet swatch(

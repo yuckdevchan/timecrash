@@ -16,18 +16,18 @@ A simple JSON format for representing swatch palettes.
 Palette Object
 ```json
 {
-  "native_locale": "en_GB",
-  "name": {"en_GB": "Blue Skies Collection"},
-  "authors": {"en_GB": ["Ethan Martin"],
-  "url": {"en_GB": "https://example.com/blue-skies-collection-palette"},
+  "native-locale": "en-GB",
+  "name": {"en-GB": "Blue Skies Collection"},
+  "authors": {"en-GB": ["Ethan Martin"]},
+  "url": {"en-GB": "https://example.com/blue-skies-collection-palette"},
   "colors": [
     {
-      "name": {"en_GB": "Sky Blue"},
-      "color": {"hex": "00b0e9", "oklch": ["0.7", "0.259", "226.59"]}
+      "name": {"en-GB": "Sky Blue"},
+      "color": {"hex": "#00b0e9", "oklch": "oklch(0.7097 0.142366 230.5858)"}
     },
     {
-      "name": {"en_GB": "Ocean Blue"},
-      "color": {"hex": "oklch": ["0.5415", "0.1801", "254.12"]}
+      "name": {"en-GB": "Ocean Blue"},
+      "color": {"hex": "#006dd4", "oklch": "oklch(0.5415 0.1801 254.12)"}
     }
   ]
 }

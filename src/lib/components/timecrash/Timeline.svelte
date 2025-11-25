@@ -6,6 +6,7 @@
   let {
     children,
     playhead = $bindable(),
+    mouseDownOnRuler = $bindable(),
     trackAreaStartX,
     viewScale,
     addTrackWithLastTrackType,
@@ -26,10 +27,20 @@
   class="absolute z-1 h-full w-1 border border-red-700 bg-red-500 pointer-events-none"
   class:hidden={trackAreaStartX <= 0 || !playhead.exists}
   style="left: {playhead.pos * viewScale + trackAreaStartX}px;"
+  onmousedown={() => (mouseDownOnRuler = true)}
 >
   <Triangle
     class="-translate-[0.6725em] rotate-180 fill-red-500 stroke-red-700"
   />
+</div>
+
+<div class="h-5 w-full bg-neutral-800">
+  {#each { length: 21 }, num}
+    <span
+      class="text-zinc-400 absolute text-center font-mono text-sm"
+      style="left: {trackAreaStartX + num * viewScale}px">{num}</span
+    >
+  {/each}
 </div>
 
 {@render children()}

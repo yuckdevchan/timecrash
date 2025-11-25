@@ -209,41 +209,13 @@
     inputElem.click();
   }
 
-  let mouseDownOnTimeline = $state(false);
-  // let lessThan200msSinceLastMouseDown = $state(false);
+  let mouseDownOnRuler = $state(false);
 
   function handleMouseMove(e: MouseEvent) {
-    if (mouseDownOnTimeline && false) {
-      playhead.pos = Math.max(0, (e.clientX - trackAreaStartX) / viewScale);
-    }
+    playhead.pos = Math.max(0, (e.clientX - trackAreaStartX) / viewScale);
   }
 
-  // function handleMouseDown(e: MouseEvent) {
-  //   if (e.button === 0) {
-  //     mouseDown = true;
-  //     if (
-  //       e.clientX >= trackAreaStartX &&
-  //       e.clientX <= trackAreaEndX &&
-  //       e.clientY >= trackAreaStartY
-  //     ) {
-  //       if (lessThan200msSinceLastMouseDown) {
-  //         playhead.pos = 0;
-  //         return;
-  //       }
-  //       lessThan200msSinceLastMouseDown = true;
-  //       setTimeout(() => {
-  //         lessThan200msSinceLastMouseDown = false;
-  //       }, 200);
-  //       mouseDownOnTimeline = true;
-  //       handleMouseMove(e);
-  //     }
-  //   }
-  // }
-
-  // function handleMouseUp() {
-  //   mouseDown = false;
-  //   mouseDownOnTimeline = false;
-  // }
+  function handleMouseUp(e: MouseEvent);
 
   function addMediaItemToTrackAsClip(mediaItemId: string, trackId: string) {
     const mediaItem: MediaItem = mediaPool.find(
@@ -270,7 +242,7 @@
   <meta property="theme-color" content="#0000FF" />
 </svelte:head>
 
-<svelte:window onmousemove={handleMouseMove} />
+<svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
 
 <ContextMenu.Root bind:open={showDeleteContextMenu}></ContextMenu.Root>
 
@@ -379,6 +351,7 @@
 
           <Timeline
             bind:playhead
+            bind:mouseDownOnRuler
             {trackAreaStartX}
             {viewScale}
             {addTrackWithLastTrackType}

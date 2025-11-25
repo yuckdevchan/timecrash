@@ -78,7 +78,7 @@
     },
   ];
 
-  open = true;
+  // open = true;
   let selectedPalette = $state(Object.keys(colors)[0]);
   let compactMode: boolean = $state(density === 0);
 

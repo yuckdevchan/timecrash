@@ -40,7 +40,8 @@
   <div
     id="windowTitle"
     class="flex items-center justify-between border-b select-none rounded-t-md"
-    class:bg-neutral-950={dragging}
+    class:dark:bg-neutral-950={dragging}
+    class:bg-neutral-100={dragging}
     onmousedown={handleMouseDown}
     aria-label="Drag to move window"
     role="heading"

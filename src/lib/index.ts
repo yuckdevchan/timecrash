@@ -70,6 +70,7 @@ export const projectTemplates: Record<string, ProjectTemplate> = {
       speed: 1,
       exists: true,
     },
+    timelineLength: 600,
   },
 };
 

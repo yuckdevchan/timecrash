@@ -17,7 +17,8 @@
   import ViewAndPlaybackOptionsPopoverContent from "$lib/components/timecrash/ViewAndPlaybackOptionsPopoverContent.svelte";
   import NoTracks from "$lib/components/timecrash/NoTracks.svelte";
   import Timeline from "$lib/components/timecrash/Timeline.svelte";
-  import Track from "$lib/components/timecrash/Track.svelte";
+  import TrackControlBox from "$lib/components/timecrash/TrackControlBox.svelte";
+  import TrackClipArea from "$lib/components/timecrash/TrackClipArea.svelte";
   import MediaPool from "$lib/components/timecrash/MediaPool.svelte";
   import BottomBar from "$lib/components/timecrash/BottomBar.svelte";
   import ProjectTabBar from "$lib/components/timecrash/ProjectTabBar.svelte";
@@ -42,6 +43,7 @@
   let baseTrackHeight = $state(project.baseTrackHeight);
   let baseTrackType = $state(project.baseTrackType);
   let baseTrackAddAmount = $state(project.baseTrackAddAmount);
+  let timelineLength = $state(project.timelineLength);
   let trackCount = $derived(tracks.length);
 
   let mediaPool = $state([]);
@@ -55,6 +57,7 @@
       timeSignature = project.timeSignature;
       baseTrackHeight = project.baseTrackHeight;
       baseTrackAddAmount = project.baseTrackAddAmount;
+      timelineLength = project.timelineLength;
     }
   });
 
@@ -68,7 +71,7 @@
   let showCommandRunner = $state(false);
   let showMediaPool = $state(true);
   let showCreateProjectDialog = $state(false);
-  let trackAreaStartX = $state(0);
+  let TrackClipAreaStartX = $state(0);
   let viewScale = $state(25);
   let autoSizeTracks = $state(false);
 
@@ -80,11 +83,12 @@
     trackTypes: TrackType[] = baseTrackType,
     amount: number = baseTrackAddAmount,
   ) {
+    const trackId = crypto.randomUUID();
     for (let trackType of trackTypes) {
       const template = trackTemplates[trackType];
       for (let i = 0; i < amount; i++) {
         const track = { ...template };
-        track.id = crypto.randomUUID();
+        track.id = trackId;
         let a = 0;
         while (true) {
           track.name = `${template.name} ${a + 1}`;
@@ -97,6 +101,7 @@
         tracks.push(track);
       }
     }
+    return trackId;
   }
 
   function deleteTrack(index: number) {
@@ -212,10 +217,14 @@
   let mouseDownOnRuler = $state(false);
 
   function handleMouseMove(e: MouseEvent) {
-    playhead.pos = Math.max(0, (e.clientX - trackAreaStartX) / viewScale);
+    if (mouseDownOnRuler) {
+      playhead.pos = Math.max(0, (e.clientX - TrackClipAreaStartX) / viewScale);
+    }
   }
 
-  function handleMouseUp(e: MouseEvent);
+  function handleMouseUp() {
+    mouseDownOnRuler = false;
+  }
 
   function addMediaItemToTrackAsClip(mediaItemId: string, trackId: string) {
     const mediaItem: MediaItem = mediaPool.find(
@@ -352,30 +361,21 @@
           <Timeline
             bind:playhead
             bind:mouseDownOnRuler
-            {trackAreaStartX}
+            {TrackClipAreaStartX}
             {viewScale}
             {addTrackWithLastTrackType}
+            {timelineLength}
           >
-            {#each projects[project].tracks as track, index (track.id)}
-              <Track
-                bind:track={tracks[index]}
-                bind:trackAreaStartX
-                bind:playhead
-                bind:mouseDownOnTimeline
-                {index}
-                {baseTrackHeight}
-                {deleteTrack}
-                {soloTrack}
-                {muteTrack}
-                {trackCount}
-                {viewScale}
-                {autoSizeTracks}
-                inProjectId={selectedProjectId}
-                bind:selectedProjectId
-                {mediaPool}
-                {addMediaItemToTrackAsClip}
-              />
-            {/each}
+            <div>
+              {#each projects[project].tracks as track, index (track.id)}
+                <TrackControlBox {track} />
+              {/each}
+            </div>
+            <div>
+              {#each projects[project].tracks as track, index (track.id)}
+                <TrackClipArea {track} />
+              {/each}
+            </div>
           </Timeline>
         </Tabs.Content>
       {/each}
@@ -383,7 +383,7 @@
   </Resizable.Pane>
   <Resizable.Handle class="w-1" />
   <div class:hidden={!showMediaPool}>
-    <Resizable.Pane class="h-full z-2! max-w-150 w-150" defaultSize={35}>
+    <Resizable.Pane class="h-full z-2! max-w-150 w-100" defaultSize={35}>
       <MediaPool
         bind:mediaPool
         bind:tracks

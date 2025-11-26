@@ -68,6 +68,7 @@ export type ProjectTemplate = {
   timeSignature: TimeSignature;
   bpm: number;
   playhead: Playhead;
+  timelineLength: number;
 };
 
 export interface Project extends ProjectTemplate {

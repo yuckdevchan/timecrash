@@ -1,10 +1,5 @@
 <script lang="ts">
-  import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
-  import { Slider } from "$lib/components/ui/slider/index.js";
-  import { Button } from "$lib/components/ui/button/index.js";
-
-  import NumericInput from "$lib/components/timecrash/NumericInput.svelte";
   import Clip from "$lib/components/timecrash/Clip.svelte";
 
   import type {
@@ -26,7 +21,6 @@
     track: TrackLike;
     trackAreaStartX: number;
     playhead: Playhead;
-    mouseDownOnTimeline: boolean;
     index: number;
     baseTrackHeight: number;
     deleteTrack: (index: number) => void;
@@ -45,7 +39,6 @@
     track = $bindable(),
     trackAreaStartX = $bindable(),
     playhead = $bindable(),
-    mouseDownOnTimeline = $bindable(),
     index,
     baseTrackHeight,
     deleteTrack,
@@ -137,6 +130,7 @@
     </div>
   </div>
 {/snippet}
+
 <ContextMenu.Root>
   <ContextMenu.Trigger>
     <div
@@ -164,6 +158,12 @@
         class:border-b-2={index === trackCount - 1}
         role="row"
         tabindex={index}
+        onclick={() => {
+          playhead.pos = Math.max(
+            0,
+            (event.clientX - trackAreaStartX) / viewScale,
+          );
+        }}
         ondblclick={() => {
           playhead.pos = 0;
         }}

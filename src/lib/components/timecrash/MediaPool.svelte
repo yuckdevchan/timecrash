@@ -50,11 +50,13 @@
     selectedFiles = new DataTransfer().files;
   }
 
-  function removeFromMediaPool(fileId: string) {
-    mediaPool = mediaPool.filter((file) => file.id !== fileId);
+  function removeFromMediaPool(mediaItemId: string) {
+    mediaPool = mediaPool.filter(
+      (mediaItem: MediaItem) => mediaItem.id !== mediaItemId,
+    );
   }
 
-  let newMediaURL = $state("https://supersonic.software/clues/3/winner.mp3");
+  let newMediaURL = $state();
   let uploadFromURLPopoverOpen = $state(false);
 
   async function uploadFromURL() {
@@ -223,7 +225,8 @@
                 {/each}
                 <ContextMenu.Item
                   onclick={() => {
-                    addTracks(null, ["audio"], 1);
+                    const trackId = addTracks(null, ["audio"], 1);
+                    addMediaItemToTrackAsClip(file.id, trackId);
                   }}><Plus /> New Track</ContextMenu.Item
                 >
               </ContextMenu.SubContent>

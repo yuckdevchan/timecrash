@@ -19,7 +19,8 @@
     <li
       class="absolute left-{clip.inTrackStart} my-1 flex list-none flex-col rounded-md bg-blue-400"
     >
-      <span class="text-ellipsis rounded-t-md bg-blue-900 p-1 text-sm"
+      <span
+        class="text-ellipsis rounded-t-md bg-blue-900 p-1 text-sm text-white"
         >{clip.mediaItem.name}</span
       >
       <Waveform {clip} />

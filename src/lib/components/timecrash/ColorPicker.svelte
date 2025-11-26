@@ -90,7 +90,10 @@
     }
   });
 
-  function downloadTCSwatch() {}
+  function downloadTCSwatch() {
+    const dataStr =
+      "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify());
+  }
 </script>
 
 {#snippet swatch(
@@ -232,7 +235,7 @@
                       {@const colorNameTitleCase =
                         color[0].toUpperCase() + color.slice(1)}
 
-                      <tr class="hover:bg-muted/30">
+                      <tr class="hover:bg-muted/100">
                         <td
                           class="{densities[density]
                             .cellPadding} px-2 font-medium whitespace-nowrap {densities[

@@ -9,6 +9,8 @@
   import { secondsToDurationString } from "$lib/utils.ts";
 
   import {
+    CodeXml,
+    Info,
     Play,
     Pause,
     Circle,
@@ -38,11 +40,11 @@
     <Menubar.Menu>
       <Menubar.Trigger>timecrash</Menubar.Trigger>
       <Menubar.Content>
-        <Menubar.Item>About</Menubar.Item>
+        <Menubar.Item><Info />About</Menubar.Item>
         <Menubar.Item
           onclick={() => {
             open("https://github.com/yuckdevchan/timecrash");
-          }}>Source Code on GitHub</Menubar.Item
+          }}><CodeXml />Source Code on GitHub</Menubar.Item
         >
       </Menubar.Content>
     </Menubar.Menu>

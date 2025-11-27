@@ -12,7 +12,9 @@
   <link rel="manifest" href="/manifest.json" />
 </svelte:head>
 
+<Toaster />
 <ModeWatcher />
+
 <main class="h-[92vh] min-h-[92vh]">
   {@render children()}
 </main>

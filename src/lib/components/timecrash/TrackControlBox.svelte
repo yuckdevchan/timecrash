@@ -9,15 +9,17 @@
 
   import { X, Headphones, VolumeOff } from "@lucide/svelte";
 
-  let { index, track = $bindable(), trackCount, deleteTrack } = $props();
+  let {
+    index,
+    track = $bindable(),
+    trackClipAreaStartX = $bindable(0),
+    trackCount,
+    deleteTrack,
+  } = $props();
 </script>
 
-{#snippet trackControlBox(
-  index: number,
-  track: TrackLike,
-  trackCount: number,
-  deleteTrack: (index: number) => void,
-)}
+<div class="flex h-full">
+  <!-- Grey side part -->
   <span
     class="flex h-full flex-col items-center justify-between bg-gray-300 border-t-2 border-zinc-500 font-mono text-gray-700 dark:bg-gray-600 dark:text-gray-300 dark:border-zinc-900"
     class:border-b-2={index === trackCount - 1}
@@ -32,6 +34,7 @@
     <span class="font-bold">{index + 1}</span>
   </span>
 
+  <!-- Part with controls -->
   <div
     class="w-75 flex flex-col border-r-2 border-t-2 dark:border-zinc-900 dark:bg-zinc-900 border-zinc-500 bg-zinc-200"
     class:border-b-2={index === trackCount - 1}
@@ -69,4 +72,4 @@
       />
     </div>
   </div>
-{/snippet}
+</div>

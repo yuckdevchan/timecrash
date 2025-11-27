@@ -2,11 +2,7 @@
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
   import Clip from "$lib/components/timecrash/Clip.svelte";
 
-  import type {
-    TrackLike,
-    Playhead,
-    MediaItem,
-  } from "$lib/timecrash/index.d.ts";
+  import type { TrackLike, Playhead, MediaItem } from "$lib/index.d.ts";
 
   import {
     X,
@@ -19,7 +15,7 @@
 
   type Props = {
     track: TrackLike;
-    trackAreaStartX: number;
+    trackClipAreaStartX: number;
     playhead: Playhead;
     index: number;
     baseTrackHeight: number;
@@ -37,7 +33,7 @@
 
   let {
     track = $bindable(),
-    trackAreaStartX = $bindable(),
+    trackClipAreaStartX = $bindable(),
     playhead = $bindable(),
     index,
     baseTrackHeight,
@@ -53,12 +49,12 @@
     addMediaItemToTrackAsClip,
   }: Props = $props();
 
-  let trackAreaStartXValue = $state(0);
+  let trackClipAreaStartXValue = $state(0);
   let trackArea: HTMLDivElement | null = $state(null);
 
   if (index === 0 && inProjectId === selectedProjectId) {
     $effect(() => {
-      trackAreaStartX = trackAreaStartXValue;
+      trackClipAreaStartX = trackClipAreaStartXValue;
     });
   }
 
@@ -143,7 +139,7 @@
     >
       <!-- TRACK CONTROL BOX -->
       {#if index === 0 && inProjectId === selectedProjectId}
-        <div bind:clientWidth={trackAreaStartXValue} class="flex">
+        <div bind:clientWidth={trackClipAreaStartXValue} class="flex">
           {@render trackControlBox(index, track, trackCount, deleteTrack)}
         </div>
       {:else}
@@ -161,7 +157,7 @@
         onclick={() => {
           playhead.pos = Math.max(
             0,
-            (event.clientX - trackAreaStartX) / viewScale,
+            (event.clientX - trackClipAreaStartX) / viewScale,
           );
         }}
         ondblclick={() => {

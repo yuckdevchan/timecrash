@@ -8,6 +8,7 @@
   import { Checkbox } from "$lib/components/ui/checkbox/index.js";
   import { Label } from "$lib/components/ui/label/index.js";
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
+  import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 
   import { Plus, Settings2 } from "@lucide/svelte";
 
@@ -24,6 +25,7 @@
   import ProjectTabBar from "$lib/components/timecrash/ProjectTabBar.svelte";
   import ColorPicker from "$lib/components/timecrash/ColorPicker.svelte";
   import Settings from "$lib/components/timecrash/Settings.svelte";
+  import Ruler from "$lib/components/timecrash/Ruler.svelte";
 
   import {
     projects as projectsInit,
@@ -79,9 +81,10 @@
   let showMediaPool = $state(true);
   let showCreateProjectDialog = $state(false);
   let showSettings = $state(false);
-  let TrackClipAreaStartX = $state(0);
+  let trackClipAreaStartX = $state(0);
   let viewScale = $state(25);
   let autoSizeTracks = $state(false);
+  let rulerHeight = $state(0);
 
   let newProjectName = $state("");
   let newProjectTemplate = $state("default");
@@ -226,7 +229,7 @@
 
   function handleMouseMove(e: MouseEvent) {
     if (mouseDownOnRuler) {
-      playhead.pos = Math.max(0, (e.clientX - TrackClipAreaStartX) / viewScale);
+      playhead.pos = Math.max(0, (e.clientX - trackClipAreaStartX) / viewScale);
     }
   }
 
@@ -372,22 +375,47 @@
 
           <Timeline
             bind:playhead
-            bind:mouseDownOnRuler
-            {TrackClipAreaStartX}
+            {trackClipAreaStartX}
             {viewScale}
             {addTrackWithLastTrackType}
-            {timelineLength}
           >
-            <div>
+            <div class="flex flex-col" style="margin-top: {rulerHeight}px">
               {#each projects[project].tracks as track, index (track.id)}
-                <TrackControlBox {track} />
+                <TrackControlBox
+                  {index}
+                  bind:track={projects[project].tracks[index]}
+                  bind:trackClipAreaStartX
+                  {trackCount}
+                  {deleteTrack}
+                />
               {/each}
             </div>
-            <div>
-              {#each projects[project].tracks as track, index (track.id)}
-                <TrackClipArea {track} />
-              {/each}
-            </div>
+            <ScrollArea orientation="horizontal" class="w-full">
+              <Ruler
+                bind:mouseDownOnRuler
+                bind:rulerHeight
+                {timelineLength}
+                {trackClipAreaStartX}
+                {viewScale}
+              />
+              <div class="flex flex-col h-full">
+                {#each projects[project].tracks as track, index (track.id)}
+                  <TrackClipArea
+                    {index}
+                    bind:track={projects[project].tracks[index]}
+                    bind:trackClipAreaStartX
+                    bind:playhead
+                    {trackCount}
+                    {viewScale}
+                    {soloTrack}
+                    {muteTrack}
+                    {deleteTrack}
+                    {mediaPool}
+                    {addMediaItemToTrackAsClip}
+                  />
+                {/each}
+              </div>
+            </ScrollArea>
           </Timeline>
         </Tabs.Content>
       {/each}

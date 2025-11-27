@@ -62,7 +62,7 @@
         - [ ] keymaps to choose from (e.g. logic pro, audacity etc.)
 
 ## behavioural & organizational bugs
-- [ ] timecrash library files in src/lib/timecrash should be moved to src/lib, as now that timecrash has its own repo, this is redundant
+- [x] timecrash library files in src/lib/timecrash should be moved to src/lib, as now that timecrash has its own repo, this is redundant
 
 ## unimplemented visual polish & bugs
 - [ ] bottom border of a track doesn't pixel match with the top border of a newly added track

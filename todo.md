@@ -46,6 +46,16 @@
              - [ ] metadata
              - [ ] piano roll preview
              - [ ] soundfont preview
+- [ ] colour
+    - [ ] change colour of clips
+    - [ ] colour picker
+      - [ ] choose from image
+      - [ ] add custom palettes
+      - [ ] copy hex, rgb, hsl, hsv, cmyk, oklch, or native value to clipboard
+      - [ ] download as .ase file
+      - [ ] download as .tcswatch file
+      - [ ] import .ase file
+      - [ ] import .tcswatch file
 - [ ] settings
     - [ ] keyboard shortcuts
         - [ ] changing

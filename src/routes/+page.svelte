@@ -90,7 +90,7 @@
   let trackClipAreaStartX = $state(0);
   let viewScale = $state(25);
   let autoSizeTracks = $state(false);
-  let rulerHeight = $state(0);
+  let rulerHeight = $state(5);
 
   let newProjectName = $state("");
   let newProjectTemplate = $state("default");
@@ -385,7 +385,10 @@
             {viewScale}
             {addTrackWithLastTrackType}
           >
-            <div class="flex flex-col" style="margin-top: {rulerHeight}px">
+            <div class="flex flex-col">
+              <div
+                class="w-full dark:bg-neutral-800 bg-neutral-200 flex-none h-{rulerHeight}"
+              ></div>
               {#each projects[project].tracks as track, index (track.id)}
                 <TrackControlBox
                   {index}
@@ -409,8 +412,8 @@
                   <TrackClipArea
                     {index}
                     bind:track={projects[project].tracks[index]}
-                    bind:trackClipAreaStartX
                     bind:playhead
+                    {trackClipAreaStartX}
                     {trackCount}
                     {viewScale}
                     {soloTrack}

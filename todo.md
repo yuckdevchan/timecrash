@@ -82,7 +82,7 @@
 - [ ] clip overlap opacity
 - [ ] icons in command runner (BLOCKED by lucide bug)
 - [ ] timeline tracks are misaligned with their control boxes
-- [ ] space to the left of the ruler is empty when it should match the colour of the ruler
+- [x] space to the left of the ruler is empty when it should match the colour of the ruler
 - [ ] close button for Window widgets doesn't match close button on Dialog widgets
 - [ ] topmost playback controls' hover backgrounds are taller and thinner than the buttons themselves
 - [ ] remove animations from lots of controls to make it feel snappier

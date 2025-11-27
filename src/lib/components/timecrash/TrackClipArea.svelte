@@ -17,8 +17,8 @@
   let {
     index,
     track = $bindable(),
-    trackClipAreaStartX = $bindable(0),
     playhead = $bindable(),
+    trackClipAreaStartX,
     trackCount,
     viewScale,
     soloTrack,

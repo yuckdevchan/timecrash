@@ -1,6 +1,8 @@
 <script lang="ts">
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
 
+  import Playhead from "$lib/components/timecrash/Playhead.svelte";
+
   import { Triangle, SkipBack } from "@lucide/svelte";
 
   let {
@@ -22,15 +24,7 @@
   });
 </script>
 
-<div
-  class="absolute z-1 h-full w-1 border border-red-700 bg-red-500 pointer-events-none"
-  class:hidden={trackClipAreaStartX <= 0 || !playhead.exists}
-  style="left: {playhead.pos * viewScale + trackClipAreaStartX}px;"
->
-  <Triangle
-    class="-translate-[0.6725em] rotate-180 fill-red-500 stroke-red-700"
-  />
-</div>
+<Playhead {trackClipAreaStartX} {playhead} {viewScale} />
 
 <div class="flex">
   {@render children()}

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { setContext } from "svelte";
+
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
@@ -9,8 +11,6 @@
   import { Label } from "$lib/components/ui/label/index.js";
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
   import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-
-  import { Plus, Settings2 } from "@lucide/svelte";
 
   import CommandRunner from "$lib/components/timecrash/CommandRunner.svelte";
   import TopBar from "$lib/components/timecrash/TopBar.svelte";
@@ -34,12 +34,16 @@
     projectTemplates,
     trackTemplates,
   } from "$lib/";
+
   import type {
     TrackLike,
     TrackType,
     MediaItem,
     CommandLike,
+    Client,
   } from "$lib/index.d.ts";
+
+  import { Plus, Settings2 } from "@lucide/svelte";
 
   let projects = $state(projectsInit);
   let selectedProjectId = $state(firstProjectId);
@@ -56,6 +60,8 @@
 
   let mediaPool = $state([]);
   let commands: Record<string, CommandLike> = $state({});
+  let openClients: Record<string, Client> = $state({});
+  setContext("openClients", openClients);
 
   $effect(() => {
     if (selectedProjectId) {

@@ -82,3 +82,12 @@ export type CommandLike = {
   icon?: string;
   action: () => void;
 };
+
+export type Client = {
+  id: string;
+  title: string;
+  resizable: boolean;
+  draggable: boolean;
+  dragging?: boolean;
+  closeable?: boolean;
+};

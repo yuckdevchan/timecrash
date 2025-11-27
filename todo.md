@@ -60,6 +60,17 @@
     - [ ] keyboard shortcuts
         - [ ] changing
         - [ ] keymaps to choose from (e.g. logic pro, audacity etc.)
+    - [ ] language & locale
+        - [ ] changing language
+        - [ ] changing locale (date, time, number formats)
+        - [ ] import / export language & locale packs
+        - [ ] edit language & locale packs in-app
+- [ ] general ui
+    - [ ] numeric input widget
+        - [ ] drag to change value
+        - [ ] increment / decrement buttons
+        - [ ] direct text input
+        - [ ] separate display and edit modes (e.g. for having + sign inside the display for gain)
 
 ## behavioural & organizational bugs
 - [x] timecrash library files in src/lib/timecrash should be moved to src/lib, as now that timecrash has its own repo, this is redundant
@@ -74,3 +85,4 @@
 - [ ] space to the left of the ruler is empty when it should match the colour of the ruler
 - [ ] close button for Window widgets doesn't match close button on Dialog widgets
 - [ ] topmost playback controls' hover backgrounds are taller and thinner than the buttons themselves
+- [ ] remove animations from lots of controls to make it feel snappier

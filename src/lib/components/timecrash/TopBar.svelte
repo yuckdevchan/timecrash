@@ -4,12 +4,11 @@
   import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
   import { toggleMode } from "mode-watcher";
-  import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
+  import { Button } from "$lib/components/ui/button/index.js";
 
   import { secondsToDurationString } from "$lib/utils.ts";
 
   import {
-    Plus,
     Play,
     Pause,
     Circle,
@@ -17,7 +16,6 @@
     Rewind,
     FastForward,
     SkipBack,
-    ListMusic,
     ChevronUp,
     Search,
   } from "@lucide/svelte";

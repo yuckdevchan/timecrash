@@ -288,7 +288,7 @@
       </Button>
     {/if}
     {#if open}
-      <Window {title}>
+      <Window {title} bind:open>
         {@render bigContent()}
       </Window>
     {/if}

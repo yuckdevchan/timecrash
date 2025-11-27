@@ -41,8 +41,8 @@
         <Menubar.Item>About</Menubar.Item>
         <Menubar.Item
           onclick={() => {
-            window.location.href = "https://supersonic.software";
-          }}>Back to supersonic.software</Menubar.Item
+            open("https://github.com/yuckdevchan/timecrash");
+          }}>Source Code on GitHub</Menubar.Item
         >
       </Menubar.Content>
     </Menubar.Menu>

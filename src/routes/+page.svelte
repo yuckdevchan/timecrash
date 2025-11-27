@@ -23,6 +23,7 @@
   import BottomBar from "$lib/components/timecrash/BottomBar.svelte";
   import ProjectTabBar from "$lib/components/timecrash/ProjectTabBar.svelte";
   import ColorPicker from "$lib/components/timecrash/ColorPicker.svelte";
+  import Settings from "$lib/components/timecrash/Settings.svelte";
 
   import {
     projects as projectsInit,
@@ -31,7 +32,12 @@
     projectTemplates,
     trackTemplates,
   } from "$lib/";
-  import type { TrackLike, TrackType, MediaItem } from "$lib/index.d.ts";
+  import type {
+    TrackLike,
+    TrackType,
+    MediaItem,
+    CommandLike,
+  } from "$lib/index.d.ts";
 
   let projects = $state(projectsInit);
   let selectedProjectId = $state(firstProjectId);
@@ -47,6 +53,7 @@
   let trackCount = $derived(tracks.length);
 
   let mediaPool = $state([]);
+  let commands: Record<string, CommandLike> = $state({});
 
   $effect(() => {
     if (selectedProjectId) {
@@ -71,6 +78,7 @@
   let showCommandRunner = $state(false);
   let showMediaPool = $state(true);
   let showCreateProjectDialog = $state(false);
+  let showSettings = $state(false);
   let TrackClipAreaStartX = $state(0);
   let viewScale = $state(25);
   let autoSizeTracks = $state(false);
@@ -291,12 +299,16 @@
   </AlertDialog.Content>
 </AlertDialog.Root>
 
+<Settings bind:open={showSettings} bind:commands />
+
 <CommandRunner
+  bind:commands
   bind:showMediaPool
   bind:showCreateProjectDialog
   bind:autoSizeTracks
   bind:showCommandRunner
   bind:showSaveProjectDialog
+  bind:showSettings
   {startStopRecording}
   {playPause}
   {rewindPlayhead}

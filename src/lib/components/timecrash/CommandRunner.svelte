@@ -2,13 +2,14 @@
   import * as Command from "$lib/components/ui/command/index.js";
   import { toggleMode } from "mode-watcher";
 
-  import type { CommandLike } from "$lib/timecrash/index.d.ts";
-
   let {
+    commands = $bindable({}),
     showMediaPool = $bindable(),
     showCreateProjectDialog = $bindable(),
     autoSizeTracks = $bindable(),
     showCommandRunner = $bindable(),
+    showSaveProjectDialog = $bindable(),
+    showSettings = $bindable(),
     startStopRecording,
     playPause,
     rewindPlayhead,
@@ -18,7 +19,14 @@
     deleteLastTrack,
   } = $props();
 
-  const commands: Record<string, CommandLike> = {
+  commands = {
+    "Open Settings": {
+      key: ",",
+      ctrl: true,
+      action: () => {
+        showSettings = !showSettings;
+      },
+    },
     Rewind: {
       key: "ArrowLeft",
       action: rewindPlayhead,

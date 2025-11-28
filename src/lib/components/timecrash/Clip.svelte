@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { clip = $bindable(), track = $bindable(), index } = $props();
+  let { clip = $bindable(), track = $bindable(), index, viewScale } = $props();
 
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
   import * as Popover from "$lib/components/ui/popover/index.js";
@@ -20,9 +20,11 @@
       class="absolute left-{clip.inTrackStart} my-1 flex list-none flex-col rounded-md bg-blue-400"
     >
       <span
-        class="text-ellipsis rounded-t-md bg-blue-900 p-1 text-sm text-white"
-        >{clip.mediaItem.name}</span
+        class="text-ellipsis rounded-t-md bg-blue-900 p-1 text-sm text-white h-7 flex absolute left-0"
+        style:width={clip.mediaItem.audioElement.duration * viewScale + "px"}
       >
+        {clip.mediaItem.name}
+      </span>
       <Waveform {clip} />
     </li>
   </ContextMenu.Trigger>

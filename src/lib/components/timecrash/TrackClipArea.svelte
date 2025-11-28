@@ -2,17 +2,9 @@
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
 
   import Clip from "$lib/components/timecrash/Clip.svelte";
+  import TrackOptions from "$lib/components/timecrash/TrackOptions.svelte";
 
   import type { MediaItem } from "$lib/index.d.ts";
-
-  import {
-    X,
-    HeadphoneOff,
-    Headphones,
-    Volume2,
-    VolumeOff,
-    Trash2,
-  } from "@lucide/svelte";
 
   let {
     index,
@@ -42,7 +34,7 @@
   <ContextMenu.Trigger class="h-full">
     <div class="h-full">
       <button
-        class="h-full relative flex w-full border-t-2 dark:border-zinc-900 dark:bg-neutral-950 focus:outline-none"
+        class="h-full relative flex w-full border-t-2 border-neutral-300 dark:border-zinc-900 dark:bg-neutral-950 focus:outline-none"
         class:border-b-2={index === trackCount - 1}
         role="row"
         tabindex={index}
@@ -61,23 +53,10 @@
         ondrop={handleDrop}
       >
         {#each track.clips as clip, index (clip.id)}
-          <Clip {clip} bind:track {index} />
+          <Clip {clip} bind:track {index} {viewScale} />
         {/each}
       </button>
     </div>
   </ContextMenu.Trigger>
-  <ContextMenu.Content>
-    <span class="px-1 py-2 text-sm uppercase text-zinc-600">Track Options</span>
-    <ContextMenu.Item onclick={() => soloTrack(index)}
-      >{#if track.soloMute.includes("solo")}<HeadphoneOff
-        />Unsolo{:else}<Headphones />Solo{/if}</ContextMenu.Item
-    >
-    <ContextMenu.Item onclick={() => muteTrack(index)}
-      >{#if track.soloMute.includes("mute")}<Volume2 />Unmute{:else}<VolumeOff
-        />Mute{/if}</ContextMenu.Item
-    >
-    <ContextMenu.Item onclick={() => deleteTrack(index)}
-      ><Trash2 />Delete</ContextMenu.Item
-    >
-  </ContextMenu.Content>
+  <TrackOptions {index} {track} {muteTrack} {soloTrack} {deleteTrack} />
 </ContextMenu.Root>

@@ -17,6 +17,8 @@
     saveProject,
     addTrackWithLastTrackType,
     deleteLastTrack,
+    incrementViewScale,
+    decrementViewScale,
   } = $props();
 
   commands = {
@@ -31,6 +33,16 @@
       key: "ArrowLeft",
       action: rewindPlayhead,
       closesRunner: false,
+    },
+    "Increment View Scale": {
+      key: "=",
+      ctrl: true,
+      action: incrementViewScale,
+    },
+    "Decrement View Scale": {
+      key: "-",
+      ctrl: true,
+      action: decrementViewScale,
     },
     "Fast Forward": {
       key: "ArrowRight",

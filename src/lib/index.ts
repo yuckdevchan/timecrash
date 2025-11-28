@@ -74,6 +74,8 @@ export const projectTemplates: Record<string, ProjectTemplate> = {
   },
 };
 
+export const defaultViewScale = 50;
+
 export const projects: Record<string, Project> = {};
 
 export const firstProjectId = crypto.randomUUID();

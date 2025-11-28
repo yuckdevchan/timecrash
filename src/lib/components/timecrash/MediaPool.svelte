@@ -35,6 +35,21 @@
   let selectedFiles = $state([]);
   let mediaPoolDensity = $state(1);
 
+  function addDurationToMediaItem(
+    node: HTMLAudioElement = null,
+    mediaItemId: string,
+    mediaItemDuration: number,
+  ) {
+    const mediaItem = mediaPool.find((item) => item.id === mediaItemId);
+    if (mediaItem && !mediaItem.duration) {
+      if (mediaItemDuration) {
+        mediaItem.duration = mediaItemDuration;
+      } else {
+        mediaItem.duration = mediaItem.audioElement.duration;
+      }
+    }
+  }
+
   function updateMediaPool() {
     for (let file of selectedFiles) {
       const mediaItem: MediaItem = {
@@ -87,6 +102,8 @@
       console.error(error);
     }
   }
+
+  $inspect(mediaPool);
 </script>
 
 <Input
@@ -158,8 +175,13 @@
     </div>
     <ScrollArea class="h-175">
       <NoMedia mediaPoolSize={mediaPool.length} />
-      {#each mediaPool as file, index (file.id)}
-        <!-- <audio src={URL.createObjectURL(file.file)}></audio> -->
+      {#each mediaPool as mediaItem, index (mediaItem.id)}
+        <audio
+          src={URL.createObjectURL(mediaItem.file)}
+          bind:this={mediaItem.audioElement}
+          use:addDurationToMediaItem={(mediaItem.id,
+          mediaItem.audioElement.duration)}
+        ></audio>
         <ContextMenu.Root>
           <ContextMenu.Trigger>
             <li
@@ -169,13 +191,13 @@
               class:rounded-t-md={index === 0}
               class:rounded-b-md={index === mediaPool.length - 1}
               ondragstart={(e) => {
-                e.dataTransfer.setData("text/plain", file.id);
+                e.dataTransfer.setData("text/plain", mediaItem.id);
               }}
             >
               <FilePlay size={20} />
               <div class="flex w-full items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span>{file.name}</span>
+                  <span>{mediaItem.name}</span>
                   <Popover.Root>
                     <Popover.Trigger>
                       <Pencil size={15} />
@@ -184,9 +206,9 @@
                       <div class="flex flex-col gap-4">
                         <span>Rename File</span>
                         <Input
-                          placeholder={file.name}
+                          placeholder={mediaItem.name}
                           onchange={(e) => {
-                            file.name = e.target.value;
+                            mediaItem.name = e.target.value;
                           }}
                         />
                       </div>
@@ -194,13 +216,13 @@
                   </Popover.Root>
                 </div>
                 <div class="flex items-center gap-8">
-                  <span class="text-zinc-600">{file.type}</span>
+                  <span class="text-zinc-600">{mediaItem.type}</span>
                   <span class="text-zinc-600"
-                    >{Math.round(file.size / 1000000, 3)} MB</span
+                    >{Math.round(mediaItem.size / 1000000, 3)} MB</span
                   >
                   <span class="text-zinc-600"
-                    >{file.lastModified
-                      ? formatUnixTimestamp(file.lastModified)
+                    >{mediaItem.lastModified
+                      ? formatUnixTimestamp(mediaItem.lastModified)
                       : ""}</span
                   >
                 </div>

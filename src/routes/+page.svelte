@@ -33,6 +33,7 @@
     firstProjectId,
     projectTemplates,
     trackTemplates,
+    defaultViewScale,
   } from "$lib/";
 
   import type {
@@ -88,9 +89,9 @@
   let showCreateProjectDialog = $state(false);
   let showSettings = $state(false);
   let trackClipAreaStartX = $state(0);
-  let viewScale = $state(25);
+  let viewScale = $state(defaultViewScale);
   let autoSizeTracks = $state(false);
-  let rulerHeight = $state(5);
+  let rulerHeight = $state(10);
 
   let newProjectName = $state("");
   let newProjectTemplate = $state("default");
@@ -257,6 +258,14 @@
       speed: 1,
     });
   }
+
+  function incrementViewScale(amount: number = 10) {
+    viewScale = Math.max(viewScale + amount, 0);
+  }
+
+  function decrementViewScale(amount: number = 10) {
+    viewScale = Math.max(viewScale - amount, 0);
+  }
 </script>
 
 <svelte:head>
@@ -325,6 +334,8 @@
   {saveProject}
   {addTrackWithLastTrackType}
   {deleteLastTrack}
+  {incrementViewScale}
+  {decrementViewScale}
 />
 
 <TopBar
@@ -387,8 +398,10 @@
           >
             <div class="flex flex-col">
               <div
-                class="w-full dark:bg-neutral-800 bg-neutral-200 flex-none h-{rulerHeight}"
-              ></div>
+                class="w-full dark:bg-neutral-800 bg-neutral-200 flex-none h-{rulerHeight} flex items-center justify-center text-zinc-500 dark:text-zinc-300"
+              >
+                <span>TRACKS</span>
+              </div>
               {#each projects[project].tracks as track, index (track.id)}
                 <TrackControlBox
                   {index}

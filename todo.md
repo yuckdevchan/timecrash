@@ -80,9 +80,20 @@
 - [ ] media pool content gets bunched up when resizing it
 - [ ] playhead arrow shouldn't be a triangle, but a triangle with it's straight side extruded upwards, this kind of shape: ⌫, but rotated
 - [ ] clip overlap opacity
-- [ ] icons in command runner (BLOCKED by lucide bug)
+- [ ] icons in command runner (BLOCKED by lucide bug, i think)
 - [ ] timeline tracks are misaligned with their control boxes
 - [x] space to the left of the ruler is empty when it should match the colour of the ruler
 - [ ] close button for Window widgets doesn't match close button on Dialog widgets
 - [ ] topmost playback controls' hover backgrounds are taller and thinner than the buttons themselves
 - [ ] remove animations from lots of controls to make it feel snappier
+
+## bonus features / on radar
+- [ ] live collaborative editing (would require a server)
+- [ ] basic image manipulation e.g. cropping etc.
+- [ ] advanced audio effects e.g. cleanup background noise
+- [ ] advanced video effects e.g. chroma key, transformations
+- [ ] colour grading workflow
+- [ ] electron app
+- [ ] score / notation viewer / editor for midi clips
+- [ ] touchscreen support
+- [ ] [custom scripting language or support for an existing one](https://en.wikipedia.org/wiki/Programming_(music))

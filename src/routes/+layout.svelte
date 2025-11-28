@@ -6,6 +6,7 @@
 
   import "./style.css";
   import "$lib/assets/css/app.css";
+  import "$lib/assets/css/extra.css";
 </script>
 
 <svelte:head>

@@ -20,4 +20,5 @@ A web-based digital media workstation that cares, made by a human.
 - Electron app?
 ### Licensing
 > See [LICENSE](https://github.com/yuckdevchan/timecrash/blob/main/LICENSE)
+
 Timecrash is proprietary software. You may view the source code, but you may not modify, copy, or redistribute it without permission. The project may be relicensed in the future.

@@ -53,7 +53,7 @@
       >
         <span class="p-1 ml-1">{title}</span>
         <button
-          class="p-1 hover:bg-red-500 rounded-tr-md"
+          class="p-1 hover:bg-red-500 hover:text-white rounded-tr-md"
           onclick={() => {
             open = false;
           }}

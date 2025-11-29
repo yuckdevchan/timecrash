@@ -5,8 +5,7 @@
   let { children } = $props();
 
   import "./style.css";
-  import "$lib/assets/css/app.css";
-  import "$lib/assets/css/extra.css";
+  import "$lib/app.css";
 </script>
 
 <svelte:head>

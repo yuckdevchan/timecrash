@@ -71,11 +71,11 @@
     );
   }
 
-  let newMediaURL = $state();
+  let newMediaURL: string = $state("");
   let uploadFromURLPopoverOpen = $state(false);
 
   async function uploadFromURL() {
-    const url = newMediaURL;
+    const url = new URL(newMediaURL);
     try {
       const response = await fetch(url);
       if (response.ok) {

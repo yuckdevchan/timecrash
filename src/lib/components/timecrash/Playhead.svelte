@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="absolute h-full w-1 border border-red-700 bg-red-500 pointer-events-none"
+  class="absolute h-full w-1 border border-red-700 bg-red-500 pointer-events-none z-10"
   class:hidden={trackClipAreaStartX <= 0 || !playhead.exists}
   style="left: {playhead.pos * viewScale + trackClipAreaStartX}px;"
 >

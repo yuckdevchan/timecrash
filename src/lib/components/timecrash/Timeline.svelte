@@ -3,7 +3,7 @@
 
   import Playhead from "$lib/components/timecrash/Playhead.svelte";
 
-  import { Triangle, SkipBack } from "@lucide/svelte";
+  import { SkipBack } from "@lucide/svelte";
 
   let {
     children,

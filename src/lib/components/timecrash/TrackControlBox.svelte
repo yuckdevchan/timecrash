@@ -13,15 +13,20 @@
     index,
     track = $bindable(),
     trackClipAreaStartX = $bindable(0),
+    baseTrackHeight,
     trackCount,
     deleteTrack,
   } = $props();
 </script>
 
-<div class="flex h-full">
+<div
+  class="flex"
+  style:height={baseTrackHeight + "px"}
+  bind:clientWidth={trackClipAreaStartX}
+>
   <!-- Grey side part -->
   <span
-    class="flex h-full flex-col items-center justify-between bg-gray-300 border-t-2 border-zinc-500 font-mono text-gray-700 dark:bg-gray-600 dark:text-gray-300 dark:border-zinc-900"
+    class="flex flex-col items-center justify-between bg-gray-300 border-t-2 border-zinc-500 font-mono text-gray-700 dark:bg-gray-600 dark:text-gray-300 dark:border-zinc-900"
     class:border-b-2={index === trackCount - 1}
   >
     <Button

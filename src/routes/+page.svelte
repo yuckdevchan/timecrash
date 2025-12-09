@@ -101,10 +101,12 @@
     trackTypes: TrackType[] = baseTrackType,
     amount: number = baseTrackAddAmount,
   ) {
-    const trackId = crypto.randomUUID();
+    let trackIds = [];
     for (let trackType of trackTypes) {
       const template = trackTemplates[trackType];
       for (let i = 0; i < amount; i++) {
+        const trackId = crypto.randomUUID();
+        trackIds.push(trackId);
         const track = { ...template };
         track.id = trackId;
         let a = 0;
@@ -119,7 +121,7 @@
         tracks.push(track);
       }
     }
-    return trackId;
+    return trackIds;
   }
 
   function deleteTrack(index: number) {
@@ -266,6 +268,8 @@
   function decrementViewScale(amount: number = 10) {
     viewScale = Math.max(viewScale - amount, 0);
   }
+
+  $inspect(tracks);
 </script>
 
 <svelte:head>
@@ -396,7 +400,7 @@
             {viewScale}
             {addTrackWithLastTrackType}
           >
-            <div class="flex flex-col">
+            <div class="flex flex-col h-full">
               <div
                 class="w-full dark:bg-neutral-800 bg-neutral-200 flex-none h-{rulerHeight} flex items-center justify-center text-zinc-500 dark:text-zinc-300"
               >
@@ -407,6 +411,7 @@
                   {index}
                   bind:track={projects[project].tracks[index]}
                   bind:trackClipAreaStartX
+                  {baseTrackHeight}
                   {trackCount}
                   {deleteTrack}
                 />
@@ -420,12 +425,13 @@
                 {trackClipAreaStartX}
                 {viewScale}
               />
-              <div class="flex flex-col h-full">
+              <div class="flex flex-col">
                 {#each projects[project].tracks as track, index (track.id)}
                   <TrackClipArea
                     {index}
                     bind:track={projects[project].tracks[index]}
                     bind:playhead
+                    {baseTrackHeight}
                     {trackClipAreaStartX}
                     {trackCount}
                     {viewScale}

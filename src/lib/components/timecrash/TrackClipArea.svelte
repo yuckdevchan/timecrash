@@ -10,6 +10,7 @@
     index,
     track = $bindable(),
     playhead = $bindable(),
+    baseTrackHeight,
     trackClipAreaStartX,
     trackCount,
     viewScale,
@@ -31,8 +32,8 @@
 </script>
 
 <ContextMenu.Root>
-  <ContextMenu.Trigger class="h-full">
-    <div class="h-full">
+  <ContextMenu.Trigger>
+    <div class="h-full" style:height={baseTrackHeight + "px"}>
       <button
         class="h-full relative flex w-full border-t-2 border-neutral-300 dark:border-zinc-900 dark:bg-neutral-950 focus:outline-none"
         class:border-b-2={index === trackCount - 1}

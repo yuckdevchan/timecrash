@@ -72,17 +72,18 @@
   }
 
   let newMediaURL: string = $state("");
-  let uploadFromURLPopoverOpen = $state(false);
 
   async function uploadFromURL() {
-    const url = new URL(newMediaURL);
+    const url: URL = new URL(newMediaURL);
     try {
       const response = await fetch(url);
       if (response.ok) {
         const blob = await response.blob();
         let name: string;
         try {
-          name = url.split("/")[url.split("/").length - 1];
+          name = newMediaURL.toString().split("/")[
+            newMediaURL.split("/").length - 1
+          ];
         } catch {
           name = "Untitled";
         }
@@ -96,14 +97,15 @@
         };
         mediaPool.push(mediaItem);
         newMediaURL = "";
-        uploadFromURLPopoverOpen = false;
       }
     } catch (error) {
       console.error(error);
     }
   }
 
-  $inspect(mediaPool);
+  // newMediaURL = "https://supersonic-dot-software.vercel.app/clues/3/winner.mp3";
+  // uploadFromURL();
+  // addMediaItemToTrackAsClip(mediaPool[0], tracks[0].id);
 </script>
 
 <Input
@@ -123,16 +125,13 @@
   <Button
     variant="timecrashTopButtons"
     onclick={() => {
-      document.getElementById("fileSelector").click();
+      document.getElementById("fileSelector")?.click();
     }}
   >
     <Import /> Upload from Computer
   </Button>
   <Popover.Root>
-    <Popover.Trigger
-      class={buttonVariants({ variant: "timecrashTopButtons" })}
-      bind:open={uploadFromURLPopoverOpen}
-    >
+    <Popover.Trigger class={buttonVariants({ variant: "timecrashTopButtons" })}>
       <Link2 /> Upload from URL
     </Popover.Trigger>
     <Popover.Content>
@@ -177,7 +176,9 @@
       <NoMedia mediaPoolSize={mediaPool.length} />
       {#each mediaPool as mediaItem, index (mediaItem.id)}
         <audio
-          src={URL.createObjectURL(mediaItem.file)}
+          src={"file" in Object.keys(mediaItem)
+            ? URL.createObjectURL(mediaItem.file)
+            : mediaItem.url}
           bind:this={mediaItem.audioElement}
           use:addDurationToMediaItem={(mediaItem.id,
           mediaItem.audioElement.duration)}
@@ -238,7 +239,8 @@
                 {#each tracks as track, index (track.id)}
                   <ContextMenu.Item
                     class="flex gap-2"
-                    onclick={() => addMediaItemToTrackAsClip(file.id, track.id)}
+                    onclick={() =>
+                      addMediaItemToTrackAsClip(mediaItem.id, track.id)}
                   >
                     <span class="flex items-center font-mono text-zinc-600"
                       >{index + 1}</span
@@ -248,12 +250,12 @@
                 <ContextMenu.Item
                   onclick={() => {
                     const trackId = addTracks(null, ["audio"], 1);
-                    addMediaItemToTrackAsClip(file.id, trackId);
+                    addMediaItemToTrackAsClip(mediaItem.id, trackId);
                   }}><Plus /> New Track</ContextMenu.Item
                 >
               </ContextMenu.SubContent>
             </ContextMenu.Sub>
-            <ContextMenu.Item onclick={() => removeFromMediaPool(file.id)}>
+            <ContextMenu.Item onclick={() => removeFromMediaPool(mediaItem.id)}>
               <Trash2 />Remove
             </ContextMenu.Item>
           </ContextMenu.Content>

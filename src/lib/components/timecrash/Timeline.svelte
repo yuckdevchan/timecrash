@@ -54,7 +54,7 @@
           playhead.pos = 0;
         }}
       ></ContextMenu.Trigger>
-      <ContextMenu.Content>
+      <!-- <ContextMenu.Content>
         <ContextMenu.Item
           onclick={() => {
             playhead.pos = 0;
@@ -62,7 +62,7 @@
         >
           <SkipBack />Reset Playhead Position
         </ContextMenu.Item>
-      </ContextMenu.Content>
+      </ContextMenu.Content> -->
     </ContextMenu.Root>
   </div>
 {/if}

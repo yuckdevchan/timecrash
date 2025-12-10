@@ -89,6 +89,11 @@
     "Save Project": {
       key: "s",
       ctrl: true,
+      action: () => {
+        showSaveProjectDialog = true;
+      },
+    },
+    "Quick Save Project": {
       action: saveProject,
     },
     "Quick Add New Track": {

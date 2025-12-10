@@ -2,17 +2,15 @@
   import { setContext } from "svelte";
 
   import * as Tabs from "$lib/components/ui/tabs/index.js";
-  import * as Dialog from "$lib/components/ui/dialog/index.js";
   import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
-  import { Checkbox } from "$lib/components/ui/checkbox/index.js";
-  import { Label } from "$lib/components/ui/label/index.js";
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
   import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 
   import AboutDialog from "$lib/components/timecrash/AboutDialog.svelte";
+  import SaveProjectDialog from "$lib/components/timecrash/SaveProjectDialog.svelte";
   import CommandRunner from "$lib/components/timecrash/CommandRunner.svelte";
   import TopBar from "$lib/components/timecrash/TopBar.svelte";
   import AddTrackPopoverContent from "$lib/components/timecrash/AddTrackPopoverContent.svelte";
@@ -287,25 +285,7 @@
 <ContextMenu.Root bind:open={showDeleteContextMenu}></ContextMenu.Root>
 
 <AboutDialog bind:open={showAboutDialog} />
-
-<Dialog.Root bind:open={showSaveProjectDialog}>
-  <Dialog.Content>
-    <Dialog.Header>Save Project</Dialog.Header>
-    <div class="flex gap-2">
-      <Checkbox id="saveViewOptions" checked={true} />
-      <Label for="saveViewOptions">Bundle media files</Label>
-    </div>
-    <div class="flex gap-2">
-      <Checkbox id="saveViewOptions" checked={true} />
-      <Label for="saveViewOptions">Save View Options</Label>
-    </div>
-    <div class="flex gap-2">
-      <Checkbox id="savePalettes" checked={true} />
-      <Label for="savePalettes">Save Custom Color Palettes</Label>
-    </div>
-    <Button onclick={saveProject}>Save</Button>
-  </Dialog.Content>
-</Dialog.Root>
+<SaveProjectDialog bind:open={showSaveProjectDialog} {saveProject} />
 
 <AlertDialog.Root open={showProjectConflictDialog}>
   <AlertDialog.Content class="[&>button:last-child]:hidden">

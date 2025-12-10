@@ -1,81 +1,84 @@
 # todo
 
 ## half / unimplemented features
+
 - [ ] project conflict resolution
 - [ ] view panels
-    - [ ] option to choose which side panels go on
-    - [ ] detachable panels?
-    - [ ] save view panel settings that aren't in project to user settings, stored in browser
+  - [ ] option to choose which side panels go on
+  - [ ] detachable panels?
+  - [ ] save view panel settings that aren't in project to user settings, stored in browser
 - [ ] saving
-    - [ ] autosave
-    - [ ] save to filesystem without dialog
+  - [ ] autosave
+  - [ ] save to filesystem without dialog
 - [ ] clips
-    - [ ] location
-    - [ ] length
-    - [ ] working waveform
-    - [ ] copy/paste
-    - [x] drag & drop from media pool
-    - [ ] trimming
-    - [ ] splitting
-    - [ ] audio
-        - [ ] audio ungrouping
-        - [ ] simple fade in / out (like kdenlive)
-        - [ ] envelope editor
-            - [ ] zig-zag
-            - [ ] splines?
-    - [ ] video
-        - [ ] video / audio ungrouping
-    - [ ] midi
-        - [ ] piano roll editor
-        - [ ] software instrumentation controllable with keyboard
-        - [ ] change soundfont
+  - [ ] location
+  - [ ] length
+  - [ ] working waveform
+  - [ ] copy/paste
+  - [x] drag & drop from media pool
+  - [ ] trimming
+  - [ ] splitting
+  - [ ] audio
+    - [ ] audio ungrouping
+    - [ ] simple fade in / out (like kdenlive)
+    - [ ] envelope editor
+      - [ ] zig-zag
+      - [ ] splines?
+  - [ ] video
+    - [ ] video / audio ungrouping
+  - [ ] midi
+    - [ ] piano roll editor
+    - [ ] software instrumentation controllable with keyboard
+    - [ ] change soundfont
 - [ ] exporting
 - [ ] media pool
-    - [ ] import from url
-    - [ ] media previewa
-         - [ ] video preview
-             - [ ] metadata
-             - [ ] audio preview
-         - [ ] audio preview
-             - [ ] spectogram
-             - [ ] waveform
-             - [ ] metadata
-         - [ ] image preview
-             - [ ] metadata
-         - [ ] midi preview
-             - [ ] metadata
-             - [ ] piano roll preview
-             - [ ] soundfont preview
+  - [ ] import from url
+  - [ ] media previewa
+    - [ ] video preview
+      - [ ] metadata
+      - [ ] audio preview
+    - [ ] audio preview
+      - [ ] spectogram
+      - [ ] waveform
+      - [ ] metadata
+    - [ ] image preview
+      - [ ] metadata
+    - [ ] midi preview
+      - [ ] metadata
+      - [ ] piano roll preview
+      - [ ] soundfont preview
 - [ ] colour
-    - [ ] change colour of clips
-    - [ ] colour picker
-      - [ ] choose from image
-      - [ ] add custom palettes
-      - [ ] copy hex, rgb, hsl, hsv, cmyk, oklch, or native value to clipboard
-      - [ ] download as .ase file
-      - [ ] download as .tcswatch file
-      - [ ] import .ase file
-      - [ ] import .tcswatch file
+  - [ ] change colour of clips
+  - [ ] colour picker
+    - [ ] choose from image
+    - [ ] add custom palettes
+    - [ ] copy hex, rgb, hsl, hsv, cmyk, oklch, or native value to clipboard
+    - [ ] download as .ase file
+    - [ ] download as .tcswatch file
+    - [ ] import .ase file
+    - [ ] import .tcswatch file
 - [ ] settings
-    - [ ] keyboard shortcuts
-        - [ ] changing
-        - [ ] keymaps to choose from (e.g. logic pro, audacity etc.)
-    - [ ] language & locale
-        - [ ] changing language
-        - [ ] changing locale (date, time, number formats)
-        - [ ] import / export language & locale packs
-        - [ ] edit language & locale packs in-app
+  - [ ] keyboard shortcuts
+    - [ ] changing
+    - [ ] keymaps to choose from (e.g. logic pro, audacity etc.)
+  - [ ] language & locale
+    - [ ] changing language
+    - [ ] changing locale (date, time, number formats)
+    - [ ] import / export language & locale packs
+    - [ ] edit language & locale packs in-app
 - [ ] general ui
-    - [ ] numeric input widget
-        - [ ] drag to change value
-        - [ ] increment / decrement buttons
-        - [ ] direct text input
-        - [ ] separate display and edit modes (e.g. for having + sign inside the display for gain)
+  - [ ] numeric input widget
+    - [ ] drag to change value
+    - [ ] increment / decrement buttons
+    - [ ] direct text input
+    - [ ] separate display and edit modes (e.g. for having + sign inside the display for gain)
 
 ## behavioural & organizational bugs
+
 - [x] timecrash library files in src/lib/timecrash should be moved to src/lib, as now that timecrash has its own repo, this is redundant
 
 ## unimplemented visual polish & bugs
+
 - [ ] bottom border of a track doesn't pixel match with the top border of a newly added track
 - [ ] media pool content gets bunched up when resizing it
 - [ ] playhead arrow shouldn't be a triangle, but a triangle with it's straight side extruded upwards, this kind of shape: ⌫, but rotated
@@ -88,6 +91,7 @@
 - [ ] remove animations from lots of controls to make it feel snappier
 
 ## bonus features / on radar
+
 - [ ] live collaborative editing (would require a server)
 - [ ] basic image manipulation e.g. cropping etc.
 - [ ] advanced audio effects e.g. cleanup background noise
@@ -96,4 +100,4 @@
 - [ ] electron app
 - [ ] score / notation viewer / editor for midi clips
 - [ ] touchscreen support
-- [ ] [custom scripting language or support for an existing one](https://en.wikipedia.org/wiki/Programming_(music))
+- [ ] [custom scripting language or support for an existing one](<https://en.wikipedia.org/wiki/Programming_(music)>)

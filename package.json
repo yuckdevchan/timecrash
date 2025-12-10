@@ -63,6 +63,7 @@
     "@fontsource/bravura-text": "^5.2.5",
     "@iconify/svelte": "^5.1.0",
     "js-confetti": "^0.13.1",
+    "jszip": "^3.10.1",
     "marked": "^16.4.2",
     "melt": "^0.41.0",
     "mode-watcher": "^1.1.0",

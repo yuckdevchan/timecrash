@@ -416,7 +416,8 @@
             <ScrollArea orientation="horizontal" class="w-full">
               <Ruler
                 bind:mouseDownOnRuler
-                bind:handleMouseMove
+                {handleMouseMove}
+                bind:playhead
                 bind:rulerHeight
                 {timelineLength}
                 {viewScale}

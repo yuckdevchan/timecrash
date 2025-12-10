@@ -2,6 +2,7 @@
   let {
     mouseDownOnRuler = $bindable(false),
     handleMouseMove,
+    playhead = $bindable(),
     rulerHeight = $bindable(5),
     timelineLength,
     viewScale,
@@ -13,6 +14,9 @@
   onmousedown={(event) => {
     mouseDownOnRuler = true;
     handleMouseMove(event);
+  }}
+  ondblclick={() => {
+    playhead.pos = 0;
   }}
   role="presentation"
 >

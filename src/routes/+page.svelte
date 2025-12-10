@@ -2,15 +2,15 @@
   import { setContext } from "svelte";
 
   import * as Tabs from "$lib/components/ui/tabs/index.js";
-  import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
-  import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
+  import { buttonVariants } from "$lib/components/ui/button/index.js";
   import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 
   import AboutDialog from "$lib/components/timecrash/AboutDialog.svelte";
   import SaveProjectDialog from "$lib/components/timecrash/SaveProjectDialog.svelte";
+  import ProjectConflictDialog from "$lib/components/timecrash/ProjectConflictDialog.svelte";
   import CommandRunner from "$lib/components/timecrash/CommandRunner.svelte";
   import TopBar from "$lib/components/timecrash/TopBar.svelte";
   import AddTrackPopoverContent from "$lib/components/timecrash/AddTrackPopoverContent.svelte";
@@ -88,7 +88,7 @@
   let showSaveProjectDialog = $state(false);
   let showProjectConflictDialog = $state(false);
   let showCommandRunner = $state(false);
-  let showMediaPool = $state(true);
+  let showMediaPool = $state(false);
   let showCreateProjectDialog = $state(false);
   let showSettings = $state(false);
   let trackClipAreaStartX = $state(0);
@@ -96,6 +96,12 @@
   let autoSizeTracks = $state(false);
   let rulerHeight = $state(10);
   let bundleMediaFiles = $state(false);
+
+  let viewOptions = $derived({
+    viewScale,
+    autoSizeTracks,
+    rulerHeight,
+  });
 
   let newProjectName = $state("");
   let newProjectTemplate = $state("default");
@@ -307,22 +313,7 @@
   bind:bundleMediaFiles
   {saveProject}
 />
-
-<AlertDialog.Root open={showProjectConflictDialog}>
-  <AlertDialog.Content class="[&>button:last-child]:hidden">
-    <AlertDialog.Header>Resolve Project Conflict</AlertDialog.Header>
-    <AlertDialog.Description
-      >The opened project conflicts with an existing open project.</AlertDialog.Description
-    >
-    <Button>Keep existing open project</Button>
-    <Button>Keep newly opened project</Button>
-    <Button>Keep Both</Button>
-    <AlertDialog.Description class="text-center">
-      Selecting 'Keep Both' marks the newly opened project as a separate project
-      from the existing open project.
-    </AlertDialog.Description>
-  </AlertDialog.Content>
-</AlertDialog.Root>
+<ProjectConflictDialog bind:open={showProjectConflictDialog} />
 
 <Settings bind:open={showSettings} bind:commands />
 
@@ -425,9 +416,9 @@
             <ScrollArea orientation="horizontal" class="w-full">
               <Ruler
                 bind:mouseDownOnRuler
+                bind:handleMouseMove
                 bind:rulerHeight
                 {timelineLength}
-                {trackClipAreaStartX}
                 {viewScale}
               />
               <div class="flex flex-col">
@@ -454,19 +445,22 @@
       {/each}
     </Tabs.Root>
   </Resizable.Pane>
-  <Resizable.Handle class="w-1" />
   <div class:hidden={!showMediaPool}>
-    <Resizable.Pane class="h-full z-2! max-w-150 w-100" defaultSize={35}>
-      <MediaPool
-        bind:mediaPool
-        bind:tracks
-        bind:baseTrackAddAmount
-        bind:baseTrackType
-        {addTracks}
-        {addMediaItemToTrackAsClip}
-      />
-    </Resizable.Pane>
-  </div>
-</Resizable.PaneGroup>
+    <Resizable.Handle class="w-1" />
+    <div>
+      <Resizable.Pane class="h-full z-2! max-w-150 w-100" defaultSize={35}>
+        <MediaPool
+          bind:mediaPool
+          bind:tracks
+          bind:baseTrackAddAmount
+          bind:baseTrackType
+          {addTracks}
+          {addMediaItemToTrackAsClip}
+        />
+      </Resizable.Pane>
+    </div>
+    >/div>
+  </div></Resizable.PaneGroup
+>
 
 <BottomBar bind:trackCount bind:playhead />

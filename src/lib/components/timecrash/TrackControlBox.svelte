@@ -74,6 +74,7 @@
         max={6}
         step={1}
         class="w-full hover:cursor-col-resize"
+        ondblclick={() => (track.gain = 0)}
       />
     </div>
   </div>

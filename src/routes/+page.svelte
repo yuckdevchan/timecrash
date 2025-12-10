@@ -268,8 +268,6 @@
   function decrementViewScale(amount: number = 10) {
     viewScale = Math.max(viewScale - amount, 0);
   }
-
-  $inspect(tracks);
 </script>
 
 <svelte:head>

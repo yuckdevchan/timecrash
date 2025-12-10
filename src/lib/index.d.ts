@@ -10,7 +10,7 @@ export type Waveform = {
 export type MediaItem = {
   id: string;
   name: string;
-  type: string;
+  mediatype: string;
   size: number;
   lastModified: number;
   file?: File;

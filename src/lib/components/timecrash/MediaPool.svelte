@@ -55,7 +55,7 @@
       const mediaItem: MediaItem = {
         id: crypto.randomUUID(),
         name: file.name,
-        type: file.type,
+        mediatype: file.type,
         size: file.size,
         lastModified: file.lastModified,
         file: file,

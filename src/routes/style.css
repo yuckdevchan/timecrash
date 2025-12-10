@@ -3,6 +3,8 @@
 html {
   font-family: "Inter", sans-serif;
   overscroll-behavior-x: none;
+  height: 100%;
+  overflow-y: hidden;
 }
 
 ::selection,

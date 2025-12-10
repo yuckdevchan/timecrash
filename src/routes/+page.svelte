@@ -352,7 +352,7 @@
   {openProject}
 />
 
-<Resizable.PaneGroup direction="horizontal" class="h-full mt-1">
+<Resizable.PaneGroup direction="horizontal" class="mt-1">
   <Resizable.Pane class="h-full">
     <Tabs.Root class="h-full" bind:value={selectedProjectId}>
       <ProjectTabBar

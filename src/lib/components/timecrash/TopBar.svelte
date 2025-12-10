@@ -28,6 +28,7 @@
     timeSignature = $bindable(),
     baseTrackHeight = $bindable(),
     autoSizeTracks = $bindable(),
+    showAboutDialog = $bindable(),
     showAddTracksPopover = $bindable(),
     showCommandRunner = $bindable(),
     showSaveProjectDialog = $bindable(),
@@ -41,7 +42,11 @@
     <Menubar.Menu>
       <Menubar.Trigger>timecrash</Menubar.Trigger>
       <Menubar.Content>
-        <Menubar.Item><Info />About</Menubar.Item>
+        <Menubar.Item
+          onclick={() => {
+            showAboutDialog = true;
+          }}><Info />About</Menubar.Item
+        >
         <Menubar.Item
           onclick={() => {
             open("https://github.com/yuckdevchan/timecrash");

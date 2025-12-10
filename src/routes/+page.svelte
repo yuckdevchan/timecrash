@@ -12,6 +12,7 @@
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
   import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 
+  import AboutDialog from "$lib/components/timecrash/AboutDialog.svelte";
   import CommandRunner from "$lib/components/timecrash/CommandRunner.svelte";
   import TopBar from "$lib/components/timecrash/TopBar.svelte";
   import AddTrackPopoverContent from "$lib/components/timecrash/AddTrackPopoverContent.svelte";
@@ -81,6 +82,7 @@
     playhead.exists = trackCount <= 0 ? false : true;
   });
 
+  let showAboutDialog = $state(false);
   let showAddTracksPopover = $state(false);
   let showDeleteContextMenu = $state(false);
   let showSaveProjectDialog = $state(false);
@@ -284,8 +286,9 @@
 
 <ContextMenu.Root bind:open={showDeleteContextMenu}></ContextMenu.Root>
 
+<AboutDialog bind:open={showAboutDialog} />
+
 <Dialog.Root bind:open={showSaveProjectDialog}>
-  <!-- <Dialog.Root open={true}> -->
   <Dialog.Content>
     <Dialog.Header>Save Project</Dialog.Header>
     <div class="flex gap-2">
@@ -347,6 +350,7 @@
   bind:timeSignature
   bind:baseTrackHeight
   bind:autoSizeTracks
+  bind:showAboutDialog
   bind:showAddTracksPopover
   bind:showCommandRunner
   bind:showSaveProjectDialog

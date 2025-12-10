@@ -4,7 +4,11 @@
   import { Label } from "$lib/components/ui/label/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
 
-  let { open = $bindable(), saveProject } = $props();
+  let {
+    open = $bindable(),
+    bundleMediaFiles = $bindable(),
+    saveProject,
+  } = $props();
 
   let saveButton: HTMLButtonElement | null = $state(null);
 
@@ -19,7 +23,7 @@
   <Dialog.Content>
     <Dialog.Header>Save Project</Dialog.Header>
     <div class="flex gap-2">
-      <Checkbox id="saveViewOptions" checked={true} />
+      <Checkbox id="saveViewOptions" bind:checked={bundleMediaFiles} />
       <Label for="saveViewOptions">Bundle media files</Label>
     </div>
     <div class="flex gap-2">

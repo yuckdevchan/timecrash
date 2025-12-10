@@ -26,6 +26,8 @@
   import Settings from "$lib/components/timecrash/Settings.svelte";
   import Ruler from "$lib/components/timecrash/Ruler.svelte";
 
+  import JSZip from "jszip";
+
   import {
     projects as projectsInit,
     defaultProjectName,
@@ -93,6 +95,7 @@
   let viewScale = $state(defaultViewScale);
   let autoSizeTracks = $state(false);
   let rulerHeight = $state(10);
+  let bundleMediaFiles = $state(false);
 
   let newProjectName = $state("");
   let newProjectTemplate = $state("default");
@@ -192,17 +195,31 @@
     showCreateProjectDialog = false;
   }
 
-  function saveProject() {
-    const dataStr =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(projects[selectedProjectId]));
+  function getProjectJson() {
+    const data = JSON.stringify(projects[selectedProjectId]);
+    return data;
+  }
+
+  async function saveProject() {
+    let zip = new JSZip();
+
+    zip.file("project.json", getProjectJson());
+
+    if (bundleMediaFiles) {
+      for (let mediaItem of mediaPool) {
+        console.log(mediaItem);
+      }
+    }
+
+    const blob = await zip.generateAsync({ type: "blob" });
+
     const dlAnchorElem = document.createElement("a");
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute(
-      "download",
-      `${projects[selectedProjectId].name}.timecrash`,
-    );
+    dlAnchorElem.href = URL.createObjectURL(blob);
+    dlAnchorElem.download = `${projects[selectedProjectId].name}.zip`;
     dlAnchorElem.click();
+
+    URL.revokeObjectURL(dlAnchorElem.href);
+
     showSaveProjectDialog = false;
   }
 
@@ -285,7 +302,11 @@
 <ContextMenu.Root bind:open={showDeleteContextMenu}></ContextMenu.Root>
 
 <AboutDialog bind:open={showAboutDialog} />
-<SaveProjectDialog bind:open={showSaveProjectDialog} {saveProject} />
+<SaveProjectDialog
+  bind:open={showSaveProjectDialog}
+  bind:bundleMediaFiles
+  {saveProject}
+/>
 
 <AlertDialog.Root open={showProjectConflictDialog}>
   <AlertDialog.Content class="[&>button:last-child]:hidden">

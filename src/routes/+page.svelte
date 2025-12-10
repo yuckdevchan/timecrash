@@ -81,6 +81,7 @@
     playhead.exists = trackCount <= 0 ? false : true;
   });
 
+  let showAddTracksPopover = $state(false);
   let showDeleteContextMenu = $state(false);
   let showSaveProjectDialog = $state(false);
   let showProjectConflictDialog = $state(false);
@@ -346,6 +347,7 @@
   bind:timeSignature
   bind:baseTrackHeight
   bind:autoSizeTracks
+  bind:showAddTracksPopover
   bind:showCommandRunner
   bind:showSaveProjectDialog
   {saveProject}
@@ -353,7 +355,7 @@
 />
 
 <Resizable.PaneGroup direction="horizontal" class="mt-1">
-  <Resizable.Pane class="h-full">
+  <Resizable.Pane class="h-screen">
     <Tabs.Root class="h-full" bind:value={selectedProjectId}>
       <ProjectTabBar
         {projects}
@@ -366,7 +368,7 @@
       {#each Object.keys(projects) as project (projects[project].id)}
         <Tabs.Content value={projects[project].id} class="h-full">
           <div class="flex w-full dark:bg-zinc-900 bg-zinc-300 justify-between">
-            <Popover.Root>
+            <Popover.Root bind:open={showAddTracksPopover}>
               <Popover.Trigger
                 class={buttonVariants({ variant: "timecrashTopButtons" })}
                 ><Plus />Add Tracks</Popover.Trigger

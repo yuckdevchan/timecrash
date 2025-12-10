@@ -28,6 +28,7 @@
     timeSignature = $bindable(),
     baseTrackHeight = $bindable(),
     autoSizeTracks = $bindable(),
+    showAddTracksPopover = $bindable(),
     showCommandRunner = $bindable(),
     showSaveProjectDialog = $bindable(),
     saveProject,
@@ -81,7 +82,11 @@
     <Menubar.Menu>
       <Menubar.Trigger>Edit</Menubar.Trigger>
       <Menubar.Content>
-        <Menubar.Item>
+        <Menubar.Item
+          onclick={() => {
+            showAddTracksPopover = true;
+          }}
+        >
           Add Tracks
           <Menubar.Shortcut>⌘T</Menubar.Shortcut>
         </Menubar.Item>

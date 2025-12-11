@@ -10,7 +10,8 @@
 </script>
 
 <div
-  class="h-{rulerHeight} w-full dark:bg-neutral-800 bg-neutral-200 flex items-center"
+  class="h-{rulerHeight} relative dark:bg-neutral-800 bg-neutral-200 flex items-center"
+  style:width={timelineLength * viewScale + "px"}
   onmousedown={(event) => {
     mouseDownOnRuler = true;
     handleMouseMove(event);
@@ -25,11 +26,8 @@
     <div
       class="flex flex-col items-center justify-between absolute h-{rulerHeight} transition-all duration-300"
       style:width={numLength + "ch"}
-      style:transform={"translate(calc(" +
-        num * viewScale +
-        "px - " +
-        numLength +
-        "ch/2))"}
+      style:left={num * viewScale + "px"}
+      style:transform="translateX(-50%)"
     >
       <!-- Number -->
       <span

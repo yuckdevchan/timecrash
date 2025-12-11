@@ -1,16 +1,13 @@
 <script lang="ts">
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
 
-  import Playhead from "$lib/components/timecrash/Playhead.svelte";
-
-  import { SkipBack } from "@lucide/svelte";
-
   let {
     children,
     playhead = $bindable(),
     trackClipAreaStartX,
     viewScale,
     addTrackWithLastTrackType,
+    viewportRef,
   } = $props();
 
   $effect(() => {
@@ -23,8 +20,6 @@
     }
   });
 </script>
-
-<Playhead {trackClipAreaStartX} {playhead} {viewScale} />
 
 <div class="flex">
   {@render children()}
@@ -45,10 +40,20 @@
         class="h-full focus:outline-none flex-1"
         aria-label="Click to set playhead position to cursor; Double click to set playhead position to zero"
         onclick={(event: MouseEvent) => {
-          playhead.pos = Math.max(
-            0,
-            (event.clientX - trackClipAreaStartX) / viewScale,
-          );
+          if (
+            viewportRef &&
+            typeof viewportRef.getBoundingClientRect === "function"
+          ) {
+            const rect = viewportRef.getBoundingClientRect();
+            const xInContent =
+              (viewportRef.scrollLeft ?? 0) + (event.clientX - rect.left);
+            playhead.pos = Math.max(0, xInContent / viewScale);
+          } else {
+            playhead.pos = Math.max(
+              0,
+              (event.clientX - trackClipAreaStartX) / viewScale,
+            );
+          }
         }}
         ondblclick={() => {
           playhead.pos = 0;

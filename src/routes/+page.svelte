@@ -24,6 +24,7 @@
   import ProjectTabBar from "$lib/components/timecrash/ProjectTabBar.svelte";
   import ColorPicker from "$lib/components/timecrash/ColorPicker.svelte";
   import Settings from "$lib/components/timecrash/Settings.svelte";
+  import Playhead from "$lib/components/timecrash/Playhead.svelte";
   import Ruler from "$lib/components/timecrash/Ruler.svelte";
 
   import JSZip from "jszip";
@@ -88,11 +89,12 @@
   let showSaveProjectDialog = $state(false);
   let showProjectConflictDialog = $state(false);
   let showCommandRunner = $state(false);
-  let showMediaPool = $state(false);
+  let showMediaPool = $state(true);
   let showCreateProjectDialog = $state(false);
   let showSettings = $state(false);
   let trackClipAreaStartX = $state(0);
   let viewScale = $state(defaultViewScale);
+  let viewportRef = $state(null);
   let autoSizeTracks = $state(false);
   let rulerHeight = $state(10);
   let bundleMediaFiles = $state(false);
@@ -261,7 +263,17 @@
   let mouseDownOnRuler = $state(false);
 
   function handleMouseMove(e: MouseEvent) {
-    if (mouseDownOnRuler) {
+    if (!mouseDownOnRuler) return;
+
+    if (
+      viewportRef &&
+      typeof viewportRef.getBoundingClientRect === "function"
+    ) {
+      const rect = viewportRef.getBoundingClientRect();
+      const xInContent =
+        (viewportRef.scrollLeft ?? 0) + (e.clientX - rect.left);
+      playhead.pos = Math.max(0, xInContent / viewScale);
+    } else {
       playhead.pos = Math.max(0, (e.clientX - trackClipAreaStartX) / viewScale);
     }
   }
@@ -395,6 +407,7 @@
             {trackClipAreaStartX}
             {viewScale}
             {addTrackWithLastTrackType}
+            {viewportRef}
           >
             <div class="flex flex-col h-full">
               <div
@@ -413,32 +426,99 @@
                 />
               {/each}
             </div>
-            <ScrollArea orientation="horizontal" class="w-full">
-              <Ruler
-                bind:mouseDownOnRuler
-                {handleMouseMove}
-                bind:playhead
-                bind:rulerHeight
-                {timelineLength}
-                {viewScale}
-              />
-              <div class="flex flex-col">
-                {#each projects[project].tracks as track, index (track.id)}
-                  <TrackClipArea
-                    {index}
-                    bind:track={projects[project].tracks[index]}
-                    bind:playhead
-                    {baseTrackHeight}
-                    {trackClipAreaStartX}
-                    {trackCount}
-                    {viewScale}
-                    {soloTrack}
-                    {muteTrack}
-                    {deleteTrack}
-                    {mediaPool}
-                    {addMediaItemToTrackAsClip}
-                  />
-                {/each}
+            <ScrollArea
+              orientation="horizontal"
+              class="w-full"
+              bind:viewportRef
+            >
+              <div
+                class="relative"
+                style:width={timelineLength * viewScale + "px"}
+              >
+                <Playhead {trackClipAreaStartX} {playhead} {viewScale} />
+                <Ruler
+                  bind:mouseDownOnRuler
+                  {handleMouseMove}
+                  bind:playhead
+                  bind:rulerHeight
+                  {timelineLength}
+                  {viewScale}
+                />
+                <div class="flex flex-col">
+                  {#each projects[project].tracks as track, index (track.id)}
+                    <TrackClipArea
+                      {index}
+                      bind:track={projects[project].tracks[index]}
+                      bind:playhead
+                      {baseTrackHeight}
+                      {trackClipAreaStartX}
+                      {trackCount}
+                      {viewScale}
+                      {soloTrack}
+                      {muteTrack}
+                      {deleteTrack}
+                      {mediaPool}
+                      {addMediaItemToTrackAsClip}
+                    />
+                  {/each}
+                </div>
+
+                <div
+                  class="absolute inset-0 z-20 cursor-crosshair"
+                  onmousedown={(e) => {
+                    mouseDownOnRuler = true;
+                    if (
+                      viewportRef &&
+                      typeof viewportRef.getBoundingClientRect === "function"
+                    ) {
+                      const rect = viewportRef.getBoundingClientRect();
+                      const xInContent =
+                        (viewportRef.scrollLeft ?? 0) + (e.clientX - rect.left);
+                      playhead.pos = Math.max(0, xInContent / viewScale);
+                    } else {
+                      playhead.pos = Math.max(
+                        0,
+                        (e.clientX - trackClipAreaStartX) / viewScale,
+                      );
+                    }
+                  }}
+                  onmousemove={(e) => {
+                    if (!mouseDownOnRuler) return;
+                    if (
+                      viewportRef &&
+                      typeof viewportRef.getBoundingClientRect === "function"
+                    ) {
+                      const rect = viewportRef.getBoundingClientRect();
+                      const xInContent =
+                        (viewportRef.scrollLeft ?? 0) + (e.clientX - rect.left);
+                      playhead.pos = Math.max(0, xInContent / viewScale);
+                    } else {
+                      playhead.pos = Math.max(
+                        0,
+                        (e.clientX - trackClipAreaStartX) / viewScale,
+                      );
+                    }
+                  }}
+                  onmouseup={() => {
+                    mouseDownOnRuler = false;
+                  }}
+                  onclick={(e) => {
+                    if (
+                      viewportRef &&
+                      typeof viewportRef.getBoundingClientRect === "function"
+                    ) {
+                      const rect = viewportRef.getBoundingClientRect();
+                      const xInContent =
+                        (viewportRef.scrollLeft ?? 0) + (e.clientX - rect.left);
+                      playhead.pos = Math.max(0, xInContent / viewScale);
+                    } else {
+                      playhead.pos = Math.max(
+                        0,
+                        (e.clientX - trackClipAreaStartX) / viewScale,
+                      );
+                    }
+                  }}
+                ></div>
               </div>
             </ScrollArea>
           </Timeline>
@@ -446,22 +526,19 @@
       {/each}
     </Tabs.Root>
   </Resizable.Pane>
-  <div class:hidden={!showMediaPool}>
+  {#if showMediaPool}
     <Resizable.Handle class="w-1" />
-    <div>
-      <Resizable.Pane class="h-full z-2! max-w-150 w-100" defaultSize={35}>
-        <MediaPool
-          bind:mediaPool
-          bind:tracks
-          bind:baseTrackAddAmount
-          bind:baseTrackType
-          {addTracks}
-          {addMediaItemToTrackAsClip}
-        />
-      </Resizable.Pane>
-    </div>
-    >/div>
-  </div></Resizable.PaneGroup
->
+    <Resizable.Pane class="h-full z-2! max-w-150 w-100" defaultSize={35}>
+      <MediaPool
+        bind:mediaPool
+        bind:tracks
+        bind:baseTrackAddAmount
+        bind:baseTrackType
+        {addTracks}
+        {addMediaItemToTrackAsClip}
+      />
+    </Resizable.Pane>
+  {/if}
+</Resizable.PaneGroup>
 
 <BottomBar bind:trackCount bind:playhead />

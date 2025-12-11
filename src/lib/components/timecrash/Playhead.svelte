@@ -5,10 +5,10 @@
 </script>
 
 <div
-  class="absolute h-screen w-1 border border-red-700 bg-red-500 pointer-events-none z-10!"
+  class="absolute w-1 border border-red-700 bg-red-500 pointer-events-none z-10!"
   class:hidden={trackClipAreaStartX <= 0 || !playhead.exists}
-  style="left: calc({playhead.pos * viewScale +
-    trackClipAreaStartX}px - (var(--spacing))/2);"
+  style:left={`calc(${playhead.pos * viewScale}px - (var(--spacing))/2)`}
+  style:height="var(--playhead-height, 100vh)"
 >
   <Triangle
     class="-translate-[0.6725em] rotate-180 fill-red-500 stroke-red-700"

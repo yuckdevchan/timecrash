@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { PUBLIC_DEBUG } from "$env/static/public";
   import { setContext } from "svelte";
 
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import * as ContextMenu from "$lib/components/ui/context-menu/index.js";
+  import { Input } from "$lib/components/ui/input/index.js";
   import { buttonVariants } from "$lib/components/ui/button/index.js";
   import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 
@@ -47,6 +49,8 @@
   } from "$lib/index.d.ts";
 
   import { Plus, Settings2 } from "@lucide/svelte";
+
+  setContext("debug", PUBLIC_DEBUG === "True");
 
   let projects = $state(projectsInit);
   let selectedProjectId = $state(firstProjectId);
@@ -98,6 +102,8 @@
   let autoSizeTracks = $state(false);
   let rulerHeight = $state(10);
   let bundleMediaFiles = $state(false);
+  let viewScaleAnimationDuration = $state(300);
+  let animatePlayhead = $state(false);
 
   let viewOptions = $derived({
     viewScale,
@@ -298,11 +304,19 @@
   }
 
   function incrementViewScale(amount: number = 10) {
+    animatePlayhead = true;
     viewScale = Math.max(viewScale + amount, 0);
+    setTimeout(() => {
+      animatePlayhead = false;
+    }, viewScaleAnimationDuration);
   }
 
   function decrementViewScale(amount: number = 10) {
+    animatePlayhead = true;
     viewScale = Math.max(viewScale - amount, 0);
+    setTimeout(() => {
+      animatePlayhead = false;
+    }, viewScaleAnimationDuration);
   }
 </script>
 
@@ -388,6 +402,7 @@
               />
             </Popover.Root>
             <div class="flex">
+              <Input bind:value={playhead.speed} placeholder="Speed"></Input>
               <ColorPicker big />
               <Popover.Root>
                 <Popover.Trigger
@@ -435,7 +450,13 @@
                 class="relative"
                 style:width={timelineLength * viewScale + "px"}
               >
-                <Playhead {trackClipAreaStartX} {playhead} {viewScale} />
+                <Playhead
+                  {trackClipAreaStartX}
+                  {playhead}
+                  {viewScale}
+                  animationDuration={viewScaleAnimationDuration}
+                  animate={animatePlayhead}
+                />
                 <Ruler
                   bind:mouseDownOnRuler
                   {handleMouseMove}

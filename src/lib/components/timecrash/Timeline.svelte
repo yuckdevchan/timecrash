@@ -14,7 +14,14 @@
     let pollingRate = 60;
     if (playhead.playing) {
       const interval = setInterval(() => {
-        playhead.pos += (1 / pollingRate) * playhead.speed;
+        let increment = (1 / pollingRate) * playhead.speed;
+        if (Number.isNaN(playhead.pos)) {
+          playhead.pos = 0;
+        }
+        if (Number.isNaN(increment)) {
+          playhead.speed = 1;
+        }
+        playhead.pos += increment;
       }, 1000 / pollingRate);
       return () => clearInterval(interval);
     }

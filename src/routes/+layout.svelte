@@ -15,6 +15,6 @@
 <Toaster />
 <ModeWatcher />
 
-<main class="h-full overflow-y-hidden">
+<main class="h-full">
   {@render children()}
 </main>

@@ -119,7 +119,7 @@
           (event.key === "k" && (event.ctrlKey || event.metaKey)))
       ) {
         event.preventDefault();
-        if (kb.closesrunner || kb.closesRunner === undefined) {
+        if (kb.closesRunner || kb.closesRunner === undefined) {
           showCommandRunner = false;
         }
         if (kb.action) {

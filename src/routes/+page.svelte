@@ -1,5 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
+  import JSZip from "jszip";
 
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import * as Popover from "$lib/components/ui/popover/index.js";
@@ -25,8 +26,6 @@
   import ColorPicker from "$lib/components/timecrash/ColorPicker.svelte";
   import Settings from "$lib/components/timecrash/Settings.svelte";
   import Ruler from "$lib/components/timecrash/Ruler.svelte";
-
-  import JSZip from "jszip";
 
   import {
     projects as projectsInit,
@@ -82,13 +81,14 @@
     playhead.exists = trackCount <= 0 ? false : true;
   });
 
+  let showColorPicker = $state(false);
   let showAboutDialog = $state(false);
   let showAddTracksPopover = $state(false);
   let showDeleteContextMenu = $state(false);
   let showSaveProjectDialog = $state(false);
   let showProjectConflictDialog = $state(false);
   let showCommandRunner = $state(false);
-  let showMediaPool = $state(false);
+  let showMediaPool = $state(true);
   let showCreateProjectDialog = $state(false);
   let showSettings = $state(false);
   let trackClipAreaStartX = $state(0);
@@ -346,7 +346,9 @@
   bind:showAddTracksPopover
   bind:showCommandRunner
   bind:showSaveProjectDialog
-  {saveProject}
+  bind:showCreateProjectDialog
+  bind:showMediaPool
+  bind:showColorPicker
   {openProject}
 />
 
@@ -376,7 +378,7 @@
               />
             </Popover.Root>
             <div class="flex">
-              <ColorPicker big />
+              <ColorPicker big bind:open={showColorPicker} />
               <Popover.Root>
                 <Popover.Trigger
                   class={buttonVariants({ variant: "timecrashTopButtons" })}
@@ -460,8 +462,7 @@
         />
       </Resizable.Pane>
     </div>
-    >/div>
-  </div></Resizable.PaneGroup
->
+  </div>
+</Resizable.PaneGroup>
 
 <BottomBar bind:trackCount bind:playhead />

@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { setMode, mode } from "mode-watcher";
+
   import * as Menubar from "$lib/components/ui/menubar/index.js";
   import * as Kbd from "$lib/components/ui/kbd/index.js";
   import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
-  import { toggleMode } from "mode-watcher";
   import { Button } from "$lib/components/ui/button/index.js";
 
   import { secondsToDurationString } from "$lib/utils.ts";
@@ -32,7 +33,9 @@
     showAddTracksPopover = $bindable(),
     showCommandRunner = $bindable(),
     showSaveProjectDialog = $bindable(),
-    saveProject,
+    showCreateProjectDialog = $bindable(),
+    showMediaPool = $bindable(),
+    showColorPicker = $bindable(),
     openProject,
   } = $props();
 </script>
@@ -57,7 +60,7 @@
     <Menubar.Menu>
       <Menubar.Trigger>File</Menubar.Trigger>
       <Menubar.Content>
-        <Menubar.Item>
+        <Menubar.Item onclick={() => (showCreateProjectDialog = true)}>
           New Project
           <Menubar.Shortcut class="flex items-center"
             ><ChevronUp />N</Menubar.Shortcut
@@ -76,7 +79,10 @@
           <Menubar.Shortcut>⌘S</Menubar.Shortcut>
         </Menubar.Item>
         <Menubar.Separator />
-        <Menubar.Item>Import Media</Menubar.Item>
+        <Menubar.Item
+          onclick={() => document.getElementById("fileSelector")?.click()}
+          >Import Media</Menubar.Item
+        >
         <Menubar.Separator />
         <Menubar.Item
           >Export<Menubar.Shortcut>⌘E</Menubar.Shortcut></Menubar.Item
@@ -100,30 +106,41 @@
     <Menubar.Menu>
       <Menubar.Trigger>View</Menubar.Trigger>
       <Menubar.Content>
-        Base Track Height
-        <Input
-          placeholder="Base Track Height (min 40)"
-          type="number"
-          min="90"
-          step="10"
-          bind:value={baseTrackHeight}
-          class="my-2"
-        ></Input>
+        <div class="m-1 text-sm">
+          Base Track Height
+          <Input
+            placeholder="Base Track Height (min 40)"
+            type="number"
+            min="90"
+            step="10"
+            bind:value={baseTrackHeight}
+            class="mb-2 mt-1"
+          ></Input>
+        </div>
         <Menubar.Separator />
-        Playback speed
-        <Input
-          placeholder="Playback Speed"
-          type="number"
-          min="0.1"
-          step="0.1"
-          bind:value={playhead.speed}
-          class="my-2"
-        ></Input>
         <Menubar.Item onclick={() => (autoSizeTracks = !autoSizeTracks)}
           >Toggle Track Autosizing</Menubar.Item
         >
         <Menubar.Separator />
-        <Menubar.Item onclick={toggleMode}>Toggle Theme</Menubar.Item>
+        <Menubar.Group>
+          <Menubar.GroupHeading>Windows & Panes</Menubar.GroupHeading>
+          <Menubar.CheckboxItem bind:checked={showColorPicker}
+            >Show Color Picker</Menubar.CheckboxItem
+          >
+          <Menubar.CheckboxItem bind:checked={showMediaPool}
+            >Show Media Pool</Menubar.CheckboxItem
+          >
+        </Menubar.Group>
+        <Menubar.Separator />
+        <Menubar.Group>
+          <Menubar.GroupHeading>Appearance</Menubar.GroupHeading>
+          <Menubar.CheckboxItem
+            checked={mode.current === "dark"}
+            onCheckedChange={(checked) => {
+              setMode(checked ? "dark" : "light");
+            }}>Dark Theme</Menubar.CheckboxItem
+          >
+        </Menubar.Group>
       </Menubar.Content>
     </Menubar.Menu>
   </Menubar.Root>
@@ -223,3 +240,6 @@
     <Button class="h-8">Export</Button>
   </div>
 </div>
+
+<style>
+</style>
